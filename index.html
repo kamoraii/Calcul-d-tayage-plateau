@@ -1,54 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Etayage</title>
 
 <link rel="apple-touch-icon" href="icone.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Etayage">
 
-<title>Calcul Étayage</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1976d2">
 
 <style>
 
 body{
-font-family:Arial, sans-serif;
+font-family:-apple-system,BlinkMacSystemFont,Arial;
 background:#f2f2f2;
 margin:0;
-padding:20px;
-}
-
-h2{
-margin-top:0;
+padding:16px;
 }
 
 .container{
-max-width:600px;
+max-width:520px;
 margin:auto;
 }
 
 .card{
 background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:12px;
+padding:18px;
+border-radius:14px;
+margin-bottom:16px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-top:0;
+font-size:20px;
+}
+
+label{
+font-size:14px;
+color:#444;
 }
 
 input,select{
 width:100%;
 padding:10px;
-margin-top:5px;
-margin-bottom:10px;
 font-size:16px;
+margin-top:4px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 button{
 width:100%;
 padding:12px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 font-size:16px;
 margin-top:8px;
 color:white;
@@ -56,7 +68,7 @@ color:white;
 
 .calc{background:#1976d2;}
 .reset{background:#d32f2f;}
-.export{background:#388e3c;}
+.export{background:#2e7d32;}
 
 .grid{
 font-family:monospace;
@@ -66,18 +78,25 @@ text-align:center;
 }
 
 .small{
-font-size:14px;
-color:#555;
+font-size:13px;
+color:#666;
+}
+
+.results p{
+margin:6px 0;
 }
 
 </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
 <div class="card">
+
 <h2>Dimensions</h2>
 
 <label>Largeur</label>
@@ -95,8 +114,8 @@ color:#555;
 </select>
 
 <button class="calc" onclick="calculer()">Calculer</button>
-<button class="reset" onclick="resetAll()">Reset</button>
 <button class="export" onclick="exportImage()">Exporter tableau</button>
+<button class="reset" onclick="resetAll()">Reset</button>
 
 </div>
 
@@ -104,14 +123,19 @@ color:#555;
 <div id="exportZone">
 
 <div class="card">
+
 <h2>Tableau</h2>
+
 <div id="grid" class="grid"></div>
+
 </div>
 
+
 <div class="card">
+
 <h2>Résultats</h2>
 
-<div id="results"></div>
+<div id="results" class="results"></div>
 
 </div>
 
@@ -154,43 +178,63 @@ return val/2
 function calculer(){
 
 let largeur=parseFloat(document.getElementById("largeur").value)
+
+if(!largeur) return
+
 let profondeur=parseFloat(document.getElementById("profondeur").value)
+
+if(!profondeur) profondeur=1
+
 
 let unitL=document.getElementById("largeur_unit").value
 let unitP=document.getElementById("profondeur_unit").value
 
-if(!largeur) return
-
-if(!profondeur) profondeur=1
 
 let L=Math.round(toMailles(largeur,unitL))
 let P=Math.round(toMailles(profondeur,unitP))
 
+
+let largeur_m=L*2
+let profondeur_m=P*2
+
+
 localStorage.setItem("largeur",largeur)
 localStorage.setItem("profondeur",profondeur)
 
+
 let E=L*P
 let moises=(L-1)*P
+
 
 let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
 let verins_par=parseInt(document.getElementById("verins_par").value)
 let cales_par=parseInt(document.getElementById("cales_par").value)
 
+
 let poteaux=E*poteaux_par
 let verins=E*verins_par
 let cales=E*cales_par
 
+
 drawGrid(L,P)
 
+
 document.getElementById("results").innerHTML=`
+
 <p><b>Étais : ${E}</b></p>
 
-<p><b>Matériel à commander :</b></p>
+<p><b>Matériel à commander pour une scène de :</b></p>
+
+<p>Largeur : ${largeur_m} m</p>
+<p>Profondeur : ${profondeur_m} m</p>
+
+<br>
 
 <p>Moises : ${moises}</p>
 <p>Poteaux : ${poteaux}</p>
 <p>Vérins : ${verins}</p>
 <p>Cales bois : ${cales}</p>
+
 `
 
 }
@@ -246,8 +290,11 @@ function exportImage(){
 html2canvas(document.querySelector("#exportZone")).then(canvas=>{
 
 let link=document.createElement("a")
+
 link.download="etayage.png"
+
 link.href=canvas.toDataURL()
+
 link.click()
 
 })
@@ -263,6 +310,11 @@ let P=localStorage.getItem("profondeur")
 if(L) document.getElementById("largeur").value=L
 if(P) document.getElementById("profondeur").value=P
 
+}
+
+
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('service-worker.js')
 }
 
 </script>
