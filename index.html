@@ -25,22 +25,22 @@ min-height:100vh;
 }
 
 .container{
-max-width:520px;
+max-width:420px;
 margin:auto;
 }
 
 .card{
 background:white;
-padding:18px;
+padding:16px;
 border-radius:14px;
-margin-bottom:16px;
+margin-bottom:14px;
 box-shadow:0 6px 14px rgba(0,0,0,0.15);
 }
 
 .title{
-font-size:18px;
+font-size:17px;
 font-weight:600;
-margin-top:8px;
+margin-top:6px;
 }
 
 .subtitle{
@@ -55,12 +55,14 @@ margin-bottom:6px;
 display:flex;
 align-items:center;
 gap:8px;
-margin-bottom:14px;
+margin-bottom:12px;
 }
 
+/* boutons + - */
+
 .measureRow button{
-width:40px;
-height:40px;
+width:38px;
+height:38px;
 font-size:20px;
 background:#2f6df6;
 border:none;
@@ -68,9 +70,11 @@ border-radius:8px;
 color:white;
 }
 
+/* champ mesure */
+
 .measureRow input{
-width:90px;
-padding:10px;
+width:80px;
+padding:8px;
 font-size:18px;
 text-align:center;
 border-radius:10px;
@@ -79,24 +83,26 @@ background:#f0f5ff;
 font-weight:600;
 }
 
+/* unité */
+
 .measureRow select{
-width:60px;
-height:40px;
+width:55px;
+height:38px;
 font-size:14px;
 border-radius:8px;
 border:2px solid #2f6df6;
 background:#f0f5ff;
 }
 
-/* boutons */
+/* boutons principaux */
 
-button{
+.mainButton{
 width:100%;
-padding:12px;
+padding:11px;
 border:none;
 border-radius:10px;
 font-size:16px;
-margin-top:8px;
+margin-top:6px;
 color:white;
 }
 
@@ -118,7 +124,7 @@ margin-bottom:10px;
 .materialBlock{
 background:#e8f0ff;
 border-radius:10px;
-padding:14px;
+padding:12px;
 margin-top:10px;
 }
 
@@ -130,8 +136,8 @@ margin-bottom:6px;
 }
 
 .materialBlock p{
-margin:5px 0;
-font-size:17px;
+margin:4px 0;
+font-size:16px;
 }
 
 .advanced{
@@ -148,7 +154,10 @@ display:none;
 .smallButton{
 background:#666;
 font-size:13px;
-padding:8px;
+padding:7px;
+border-radius:8px;
+color:white;
+border:none;
 }
 
 </style>
@@ -179,7 +188,6 @@ padding:8px;
 
 </div>
 
-
 <div class="title">Profondeur</div>
 <div class="subtitle">(maille ou mètre)</div>
 
@@ -198,11 +206,10 @@ padding:8px;
 
 </div>
 
-<button class="calc" onclick="calculer()">Calculer</button>
-<button class="reset" onclick="resetAll()">Reset</button>
+<button class="mainButton calc" onclick="calculer()">Calculer</button>
+<button class="mainButton reset" onclick="resetAll()">Reset</button>
 
 </div>
-
 
 <div class="card">
 
@@ -211,14 +218,12 @@ padding:8px;
 
 </div>
 
-
 <div class="card">
 
 <h3>Résultats</h3>
 <div id="results"></div>
 
 </div>
-
 
 <div class="advanced">
 
@@ -241,7 +246,6 @@ padding:8px;
 
 </div>
 
-
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
@@ -254,13 +258,9 @@ let unit=document.getElementById(unitId).value
 let value=parseFloat(input.value)||0
 
 if(unit==="metre"){
-
 value+=delta*2
-
 }else{
-
 value+=delta
-
 }
 
 if(value<0) value=0
@@ -329,7 +329,7 @@ Matériel à commander
 <p><b>Cales bois :</b> ${cales}</p>
 <p><b>Doubles colliers :</b> ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
-<button class="export" onclick="exportCommande()">Exporter la commande</button>
+<button class="mainButton export" onclick="exportCommande()">Exporter la commande</button>
 
 </div>
 
@@ -340,7 +340,7 @@ Matériel à commander
 function drawPlan(L,P){
 
 let svg=document.getElementById("plan")
-let size=60
+let size=55
 
 let width=L*size
 let height=P*size
@@ -355,13 +355,11 @@ for(let x=0;x<L;x++){
 let cx=x*size+size/2
 let cy=y*size+size/2
 
-content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
+content+=`<circle cx="${cx}" cy="${cy}" r="5" fill="black"/>`
 
 if(x<L-1){
-
 let nx=(x+1)*size+size/2
 content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="3"/>`
-
 }
 
 }
@@ -383,10 +381,7 @@ document.getElementById("results").innerHTML=""
 }
 
 function toggleEtaie(){
-
-let block=document.getElementById("etaieBlock")
-block.classList.toggle("hidden")
-
+document.getElementById("etaieBlock").classList.toggle("hidden")
 }
 
 function exportCommande(){
