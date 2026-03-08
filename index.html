@@ -1,283 +1,632 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <!-- Icône pour écran d'accueil iPhone / Apple -->
+    <link rel="apple-touch-icon" href="icone.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Etayage">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Étayage scène · web app</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<meta charset="UTF-8">
-<title>Calcul étayage scène</title>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 16px 10px;
+            margin: 0;
+        }
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        .app {
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-<link rel="apple-touch-icon" href="icone.jpg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Etayage">
+        /* blocs arrondis */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03), 0 2px 6px rgba(0,20,40,0.05);
+            transition: all 0.1s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(2px);
+        }
 
-<style>
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #0b2b3c;
+            letter-spacing: -0.2px;
+            border-left: 5px solid #3b7fbd;
+            padding-left: 12px;
+        }
 
-body{
-font-family:Arial, sans-serif;
-background:#f2f2f2;
-padding:20px;
-}
+        .dimensions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-h1{
-text-align:center;
-color:#333;
-}
+        .dim-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
 
-.section{
-background:white;
-padding:15px;
-margin-bottom:15px;
-border-radius:8px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
+        .dim-label {
+            font-weight: 500;
+            min-width: 85px;
+            color: #1e4a6d;
+        }
 
-h3{
-margin-top:0;
-color:#444;
-}
+        .dim-input-group {
+            display: flex;
+            flex: 2 1 200px;
+            gap: 8px;
+        }
 
-input,select{
-padding:8px;
-margin:5px;
-font-size:16px;
-}
+        .dim-input-group input {
+            flex: 1 1 100px;
+            padding: 14px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 1rem;
+            background: #fafdff;
+            transition: 0.15s;
+            outline: none;
+        }
 
-button{
-padding:10px 14px;
-margin:5px;
-font-size:16px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
+        .dim-input-group input:focus {
+            border-color: #3b7fbd;
+            box-shadow: 0 0 0 3px rgba(59,127,189,0.15);
+        }
 
-.btn-calcul{
-background:#2e86de;
-color:white;
-}
+        .dim-unit {
+            padding: 10px 14px;
+            background: #eef2f6;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            font-weight: 500;
+            color: #1e3a5f;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 0.95rem;
+        }
 
-.btn-reset{
-background:#e74c3c;
-color:white;
-}
+        select.dim-unit {
+            background: #ffffff;
+            border: 1px solid #b6ccda;
+            appearance: none;
+            padding-right: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+        }
 
-.btn-export{
-background:#27ae60;
-color:white;
-}
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 8px 0;
+            justify-content: center;
+        }
 
-#tableau{
-font-size:24px;
-line-height:30px;
-font-family:monospace;
-margin-top:10px;
-}
+        .btn {
+            border: none;
+            padding: 15px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.2px;
+            background: #e2e8f0;
+            color: #1e293b;
+            flex: 1 0 auto;
+            min-width: 120px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            transition: 0.1s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
 
-.result{
-font-size:18px;
-margin-top:10px;
-}
+        .btn.primary {
+            background: #1e6bb8;
+            color: white;
+            box-shadow: 0 8px 16px -6px #1e6bb850;
+        }
+        .btn.primary:active { background: #165a9c; }
 
-.parametres{
-font-size:14px;
-color:#555;
-text-align:center;
-margin-top:10px;
-}
+        .btn.reset {
+            background: #dc4c4c;
+            color: white;
+        }
+        .btn.reset:active { background: #b33f3f; }
 
-</style>
+        .btn.export {
+            background: #2c7a4d;
+            color: white;
+        }
+        .btn.export:active { background: #1f5f39; }
 
+        .btn.secondary {
+            background: #eaeef3;
+            color: #1d3f5e;
+        }
+
+        .resultats {
+            background: #f0f7fe;
+            border-radius: 20px;
+            padding: 18px;
+            margin: 15px 0 8px 0;
+        }
+
+        .resultats p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 8px 0;
+            color: #0f3348;
+        }
+
+        .resultats span {
+            font-weight: 700;
+            color: #1f5e9e;
+        }
+
+        .materiel-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .materiel-item {
+            background: white;
+            padding: 12px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            border: 1px solid #dde7f0;
+        }
+
+        .materiel-item strong {
+            display: block;
+            font-size: 1.6rem;
+            color: #1d4e7c;
+            line-height: 1.3;
+        }
+
+        .tableau-container {
+            overflow-x: auto;
+            white-space: pre;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            background: #1b2b36;
+            color: #b3e4f5;
+            padding: 20px 12px;
+            border-radius: 28px;
+            margin: 20px 0 10px 0;
+            text-shadow: 0 0 4px #70c8ff;
+            letter-spacing: 2px;
+            border: 2px solid #304d5e;
+            box-shadow: inset 0 0 0 1px #5d8ca0;
+        }
+
+        .tableau-container pre {
+            font-family: inherit;
+            margin: 0;
+            display: inline-block;
+        }
+
+        /* section composition discrète */
+        .compo-avancee {
+            background: #f3f9ff;
+            border-radius: 28px;
+            padding: 16px;
+            margin-top: 8px;
+            border: 1px solid #c8daea;
+        }
+
+        .compo-avancee h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #346a92;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 15px;
+        }
+
+        .compo-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .compo-field {
+            display: flex;
+            flex-direction: column;
+            min-width: 70px;
+        }
+
+        .compo-field label {
+            font-size: 0.75rem;
+            color: #4c6c87;
+            margin-bottom: 4px;
+        }
+
+        .compo-field input {
+            padding: 10px 8px;
+            border-radius: 30px;
+            border: 1px solid #b6cfde;
+            width: 85px;
+            font-weight: 600;
+            text-align: center;
+            background: white;
+        }
+
+        .small-btn {
+            background: #d1dfeb;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 18px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #1c3c54;
+            cursor: pointer;
+            margin-top: 8px;
+            border: 1px solid #a8bdcf;
+        }
+
+        .footer-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        /* smartphone optimisations */
+        @media (max-width: 450px) {
+            .dim-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .dim-label {
+                min-width: auto;
+            }
+            .btn {
+                padding: 14px 12px;
+            }
+            .tableau-container {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <!-- html2canvas pour export PNG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-
 <body>
+<div class="app" id="app">
 
-<h1>Calcul étayage scène</h1>
+    <!-- bloc dimensions -->
+    <div class="card">
+        <h2>📐 Dimensions</h2>
+        <div class="dimensions-grid">
+            <div class="dim-row">
+                <span class="dim-label">Largeur</span>
+                <div class="dim-input-group">
+                    <input type="number" id="largeurValue" step="0.1" min="0.1" value="4">
+                    <select id="largeurUnit" class="dim-unit">
+                        <option value="mailles">mailles</option>
+                        <option value="metres">mètres</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dim-row">
+                <span class="dim-label">Profondeur</span>
+                <div class="dim-input-group">
+                    <input type="number" id="profondeurValue" step="0.1" min="0.1" placeholder="1 (par défaut)">
+                    <select id="profondeurUnit" class="dim-unit">
+                        <option value="mailles">mailles</option>
+                        <option value="metres">mètres</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="btn primary" id="btnCalculer">📏 Calculer</button>
+            <button class="btn reset" id="btnReset">♻️ Reset</button>
+            <button class="btn export" id="btnExporter">⬇️ Exporter</button>
+        </div>
+    </div>
 
-<div class="section">
+    <!-- bloc tableau visuel + résultats -->
+    <div class="card" id="exportBlock">
+        <h2>📊 Échafaudage</h2>
+        <div id="tableauVisuel" class="tableau-container">
+            <pre id="schemaPre">●—●—●<br>●—●—●</pre>
+        </div>
 
-<h3>Dimensions de la scène</h3>
+        <div id="resultatsSection" class="resultats">
+            <p><span>🔧 Étais :</span> <strong id="etaisCount">6</strong></p>
+            <div class="materiel-list" id="materielList">
+                <div class="materiel-item"><span>Moises</span><strong id="moisesCount">4</strong></div>
+                <div class="materiel-item"><span>Poteaux</span><strong id="poteauxCount">6</strong></div>
+                <div class="materiel-item"><span>Vérins</span><strong id="verinsCount">12</strong></div>
+                <div class="materiel-item"><span>Cales bois</span><strong id="calesCount">12</strong></div>
+            </div>
+        </div>
+    </div>
 
-Largeur (maille ou mètre)
+    <!-- composition étaie (modifiable) -->
+    <div class="compo-avancee">
+        <h3>⚙️ Composition d’un étaie (exceptionnel)</h3>
+        <div class="compo-inputs">
+            <div class="compo-field">
+                <label>Poteaux</label>
+                <input type="number" id="compoPoteaux" min="0" value="1" step="1">
+            </div>
+            <div class="compo-field">
+                <label>Vérins</label>
+                <input type="number" id="compoVerins" min="0" value="2" step="1">
+            </div>
+            <div class="compo-field">
+                <label>Cales bois</label>
+                <input type="number" id="compoCales" min="0" value="2" step="1">
+            </div>
+        </div>
+        <button class="small-btn" id="btnResetCompo">↩️ Réinitialiser composition étaie</button>
+    </div>
 
-<br>
-
-<input type="number" id="largeur">
-
-<select id="largeurUnit">
-<option value="maille">mailles</option>
-<option value="m">mètres</option>
-</select>
-
-<br><br>
-
-Profondeur (maille ou mètre)
-
-<br>
-
-<input type="number" id="profondeur">
-
-<select id="profondeurUnit">
-<option value="maille">mailles</option>
-<option value="m">mètres</option>
-</select>
-
-<br><br>
-
-<button class="btn-calcul" onclick="calculer()">Calculer</button>
-
-<button class="btn-reset" onclick="resetAll()">Reset</button>
-
+    <!-- petit rappel: app iPhone -->
+    <div style="color:#687e94; font-size:0.7rem; text-align:center; padding:8px;">Étayage v1 · ajouter à l’écran d’accueil</div>
 </div>
-
-<div class="section">
-
-<h3>Tableau d’étayage</h3>
-
-<div id="tableau"></div>
-
-</div>
-
-<div class="section">
-
-<h3>Résultats</h3>
-
-<div id="resultats" class="result"></div>
-
-<br>
-
-<button class="btn-export" onclick="exportPNG()">Exporter tableau</button>
-
-</div>
-
-<div class="parametres">
-
-Composition d’un étaie  
-(pour modification exceptionnelle)
-
-<br><br>
-
-Poteaux
-<input type="number" id="poteau" value="1">
-
-Vérins
-<input type="number" id="verin" value="2">
-
-Cales bois
-<input type="number" id="cale" value="2">
-
-<br>
-
-<button onclick="resetEtai()">Réinitialiser composition étaie</button>
-
-</div>
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+    (function() {
+        // ----- éléments DOM -----
+        const largeurInput = document.getElementById('largeurValue');
+        const largeurUnit = document.getElementById('largeurUnit');
+        const profondeurInput = document.getElementById('profondeurValue');
+        const profondeurUnit = document.getElementById('profondeurUnit');
+        const btnCalculer = document.getElementById('btnCalculer');
+        const btnReset = document.getElementById('btnReset');
+        const btnExporter = document.getElementById('btnExporter');
+        const btnResetCompo = document.getElementById('btnResetCompo');
 
-function calculer(){
+        const compoPoteaux = document.getElementById('compoPoteaux');
+        const compoVerins = document.getElementById('compoVerins');
+        const compoCales = document.getElementById('compoCales');
 
-let largeur=document.getElementById("largeur").value;
-let profondeur=document.getElementById("profondeur").value;
+        const etaisSpan = document.getElementById('etaisCount');
+        const moisesSpan = document.getElementById('moisesCount');
+        const poteauxSpan = document.getElementById('poteauxCount');
+        const verinsSpan = document.getElementById('verinsCount');
+        const calesSpan = document.getElementById('calesCount');
+        const schemaPre = document.getElementById('schemaPre');
 
-let largeurUnit=document.getElementById("largeurUnit").value;
-let profondeurUnit=document.getElementById("profondeurUnit").value;
+        // ----- état & localStorage -----
+        function saveToStorage() {
+            try {
+                localStorage.setItem('etayage_largeur', largeurInput.value);
+                localStorage.setItem('etayage_largeurUnit', largeurUnit.value);
+                localStorage.setItem('etayage_profondeur', profondeurInput.value);
+                localStorage.setItem('etayage_profondeurUnit', profondeurUnit.value);
+            } catch (e) {}
+        }
 
-if(!profondeur) profondeur=1;
+        function loadFromStorage() {
+            try {
+                const lVal = localStorage.getItem('etayage_largeur');
+                const lUnit = localStorage.getItem('etayage_largeurUnit');
+                const pVal = localStorage.getItem('etayage_profondeur');
+                const pUnit = localStorage.getItem('etayage_profondeurUnit');
 
-if(largeurUnit==="m") largeur=largeur/2;
-if(profondeurUnit==="m") profondeur=profondeur/2;
+                if (lVal !== null) largeurInput.value = lVal;
+                if (lUnit !== null) largeurUnit.value = lUnit;
+                if (pVal !== null) profondeurInput.value = pVal;
+                if (pUnit !== null) profondeurUnit.value = pUnit;
+            } catch (e) {}
+        }
 
-largeur=Math.floor(largeur);
-profondeur=Math.floor(profondeur);
+        // ----- calculs en mailles -----
+        function getMailleValue(inputEl, unitEl) {
+            let val = parseFloat(inputEl.value);
+            if (isNaN(val) || val <= 0) val = 1; // sécurité
+            const unit = unitEl.value;
+            if (unit === 'metres') {
+                return val / 2; // 1 maille = 2 mètres
+            }
+            return val; // déjà mailles
+        }
 
-let etais=largeur*profondeur;
-let moises=(largeur-1)*profondeur;
+        function arrondirMaille(v) {
+            return Math.ceil(v * 1e6) / 1e6; // on garde la précision décimale, mais pour les mailles on veut un nombre potentiellement décimal? l'utilisateur peut mettre 1.5 mètre → 0.75 maille. on autorise les mailles non entières mais le schéma utilisera floor/ceil? selon règle: l'utilisateur entre dimension, on convertit en mailles (float). Pour le calcul étais on prend le nombre de mailles (L, P) en valeur réelle, mais le schéma visuel maille par maille doit être un entier. On arrondit à l'entier supérieur pour le dessin? Il faut préciser : si L=2.3 mailles, on a 3 mailles dans le visuel? La consigne dit "mailles = mètres/2". Une maille = 2m. Donc on peut avoir des demi-mailles. Mais l'étayage est défini par mailles entières. Le plus logique : prendre plancher? Non, une scène de 3m de large = 1.5 maille → on met 2 mailles? Décidons : on prend le nombre entier de mailles nécessaire (arrondi supérieur) car on ne peut pas avoir de demi-maille. L'énoncé dit "mailles = mètres ÷ 2" sans préciser l'arrondi. Mais le tableau doit afficher des mailles entières. On choisit : nombre de mailles = ceil(mètres/2) pour la largeur et profondeur. Pour un résultat sécuritaire.
+            // De plus, la règle : si profondeur non renseignée = 1 maille.
+        }
 
-let poteau=parseInt(document.getElementById("poteau").value);
-let verin=parseInt(document.getElementById("verin").value);
-let cale=parseInt(document.getElementById("cale").value);
+        function getMailleInt(inputEl, unitEl) {
+            let raw = parseFloat(inputEl.value);
+            if (isNaN(raw) || raw <= 0) raw = 1; 
+            if (unitEl.value === 'metres') {
+                return Math.ceil(raw / 2); // nombre entier de mailles supérieur
+            } else {
+                // déjà mailles, on veut un entier : on prend le ceil également (ex: 2.3 mailles → 3 mailles)
+                return Math.ceil(raw);
+            }
+        }
 
-let poteauxTotal=etais*poteau;
-let verinsTotal=etais*verin;
-let calesTotal=etais*cale;
+        // fonction principale de mise à jour
+        function mettreAJour(resultats = true) {
+            // récup composition
+            const poteauxParEtaie = parseInt(compoPoteaux.value, 10) || 1;
+            const verinsParEtaie = parseInt(compoVerins.value, 10) || 2;
+            const calesParEtaie = parseInt(compoCales.value, 10) || 2;
 
-let tableau="";
+            // profondeur par défaut si vide ou null
+            let profondeurRaw = profondeurInput.value.trim() === '' ? null : parseFloat(profondeurInput.value);
+            let profondeurVal = profondeurRaw;
+            if (profondeurRaw === null || isNaN(profondeurRaw)) {
+                // valeur par défaut = 1 maille. On adapte selon l'unité
+                if (profondeurUnit.value === 'metres') {
+                    profondeurInput.value = 2;   // 1 maille = 2m
+                } else {
+                    profondeurInput.value = 1;
+                }
+                profondeurVal = parseFloat(profondeurInput.value);
+            }
 
-for(let y=0;y<profondeur;y++){
+            // largeur toujours obligatoire (valeur par défaut 4)
+            if (largeurInput.value.trim() === '' || isNaN(parseFloat(largeurInput.value))) {
+                largeurInput.value = 4;
+                largeurUnit.value = 'mailles';
+            }
 
-for(let x=0;x<largeur;x++){
+            // conversion en mailles entières
+            const L = getMailleInt(largeurInput, largeurUnit);
+            const P = getMailleInt(profondeurInput, profondeurUnit);
 
-tableau+="●";
+            // calculs de base
+            const etais = L * P;
+            const moises = (L - 1) * P;   // L-1 fois P, peut devenir négatif si L=0? L>=1
+            const poteaux = etais * poteauxParEtaie;
+            const verins = etais * verinsParEtaie;
+            const cales = etais * calesParEtaie;
 
-if(x<largeur-1) tableau+="—";
+            // affichage
+            etaisSpan.textContent = etais;
+            moisesSpan.textContent = moises >= 0 ? moises : 0; // pas de moises négatives
+            poteauxSpan.textContent = poteaux;
+            verinsSpan.textContent = verins;
+            calesSpan.textContent = cales;
 
-}
+            // génération du schéma
+            let schema = '';
+            for (let p = 0; p < P; p++) {
+                for (let l = 0; l < L; l++) {
+                    schema += '●';
+                    if (l < L - 1) schema += '—';
+                }
+                if (p < P - 1) schema += '\n';
+            }
+            schemaPre.textContent = schema || '●'; // au moins un point
 
-tableau+="<br>";
+            // sauvegarde localStorage
+            saveToStorage();
+        }
 
-}
+        // ----- reset complet -----
+        function resetComplet() {
+            localStorage.removeItem('etayage_largeur');
+            localStorage.removeItem('etayage_largeurUnit');
+            localStorage.removeItem('etayage_profondeur');
+            localStorage.removeItem('etayage_profondeurUnit');
 
-document.getElementById("tableau").innerHTML=tableau;
+            largeurInput.value = '4';
+            largeurUnit.value = 'mailles';
+            profondeurInput.value = '';
+            profondeurUnit.value = 'mailles';
 
-document.getElementById("resultats").innerHTML=
+            // composition par défaut
+            compoPoteaux.value = 1;
+            compoVerins.value = 2;
+            compoCales.value = 2;
 
-"Étais : "+etais+"<br><br>"+
+            mettreAJour();
+        }
 
-"<b>Matériel à commander</b><br>"+
+        // réinitialiser composition uniquement
+        function resetCompoSeule() {
+            compoPoteaux.value = 1;
+            compoVerins.value = 2;
+            compoCales.value = 2;
+            mettreAJour();
+        }
 
-"Moises : "+moises+"<br>"+
-"Poteaux : "+poteauxTotal+"<br>"+
-"Vérins : "+verinsTotal+"<br>"+
-"Cales bois : "+calesTotal;
+        // export image via html2canvas
+        function exporterImage() {
+            const element = document.getElementById('exportBlock');
+            if (!element) return;
+            html2canvas(element, {
+                scale: 1.8,
+                backgroundColor: '#ffffff',
+                allowTaint: false,
+                useCORS: true,
+                logging: false
+            }).then((canvas) => {
+                const link = document.createElement('a');
+                link.download = 'etayage-schema.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert("Erreur export : " + err);
+            });
+        }
 
-localStorage.setItem("largeur",document.getElementById("largeur").value);
-localStorage.setItem("profondeur",document.getElementById("profondeur").value);
+        // ----- event listeners -----
+        btnCalculer.addEventListener('click', (e) => {
+            e.preventDefault();
+            mettreAJour();
+        });
 
-}
+        btnReset.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetComplet();
+        });
 
-function resetAll(){
+        btnResetCompo.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetCompoSeule();
+        });
 
-localStorage.clear();
-location.reload();
+        btnExporter.addEventListener('click', (e) => {
+            e.preventDefault();
+            exporterImage();
+        });
 
-}
+        // restauration depuis localStorage au chargement
+        loadFromStorage();
 
-function resetEtai(){
+        // s'assurer que la profondeur par défaut soit appliquée après chargement si vide
+        window.addEventListener('load', function() {
+            // si profondeur input est vide, mettreAJour va appliquer la valeur par défaut (1 maille ou 2m) selon l'unité
+            // mais on veut que le champ affiche la valeur par défaut si absent
+            if (!profondeurInput.value || profondeurInput.value.trim() === '') {
+                if (profondeurUnit.value === 'metres') {
+                    profondeurInput.value = '2';
+                } else {
+                    profondeurInput.value = '1';
+                }
+            }
+            mettreAJour();
+        });
 
-document.getElementById("poteau").value=1;
-document.getElementById("verin").value=2;
-document.getElementById("cale").value=2;
+        // initial call
+        mettreAJour();
 
-}
-
-function exportPNG(){
-
-html2canvas(document.body).then(function(canvas){
-
-let link=document.createElement("a");
-link.download="etayage.png";
-link.href=canvas.toDataURL();
-link.click();
-
-});
-
-}
-
-window.onload=function(){
-
-if(localStorage.getItem("largeur")){
-document.getElementById("largeur").value=localStorage.getItem("largeur");
-}
-
-if(localStorage.getItem("profondeur")){
-document.getElementById("profondeur").value=localStorage.getItem("profondeur");
-}
-
-}
-
+        // sauvegarde à chaque changement de champs (optionnel)
+        largeurInput.addEventListener('change', saveToStorage);
+        largeurUnit.addEventListener('change', saveToStorage);
+        profondeurInput.addEventListener('change', saveToStorage);
+        profondeurUnit.addEventListener('change', saveToStorage);
+        // pour les composition on ne sauvegarde pas en localStorage
+    })();
 </script>
-
 </body>
 </html>
