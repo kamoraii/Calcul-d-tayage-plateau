@@ -46,21 +46,38 @@ margin-top:8px;
 .subtitle{
 font-size:12px;
 color:#666;
-margin-bottom:4px;
+margin-bottom:6px;
 }
 
-/* champs de mesure plus visibles */
+/* zone largeur / profondeur */
 
-input,select{
-width:100%;
+.measureRow{
+display:flex;
+gap:10px;
+align-items:center;
+margin-bottom:12px;
+}
+
+.measureRow input{
+flex:1;
 padding:12px;
 font-size:18px;
-margin-bottom:12px;
 border-radius:10px;
 border:3px solid #2f6df6;
 background:#f0f5ff;
 font-weight:600;
 }
+
+.measureRow select{
+width:110px;
+padding:10px;
+font-size:16px;
+border-radius:10px;
+border:2px solid #2f6df6;
+background:#f0f5ff;
+}
+
+/* boutons */
 
 button{
 width:100%;
@@ -136,25 +153,27 @@ padding:8px;
 <div class="title">Largeur</div>
 <div class="subtitle">(maille ou mètre)</div>
 
+<div class="measureRow">
 <input id="largeur" type="number">
-
 <select id="largeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
 </select>
+</div>
+
 
 <div class="title">Profondeur</div>
 <div class="subtitle">(maille ou mètre)</div>
 
+<div class="measureRow">
 <input id="profondeur" type="number">
-
 <select id="profondeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
 </select>
+</div>
 
 <button class="calc" onclick="calculer()">Calculer</button>
-<button class="export" onclick="exportCommande()">Exporter la commande</button>
 <button class="reset" onclick="resetAll()">Reset</button>
 
 </div>
@@ -163,7 +182,6 @@ padding:8px;
 <div class="card">
 
 <h3>Plan d’étayage</h3>
-
 <svg id="plan"></svg>
 
 </div>
@@ -172,7 +190,6 @@ padding:8px;
 <div class="card">
 
 <h3>Résultats</h3>
-
 <div id="results"></div>
 
 </div>
@@ -231,7 +248,6 @@ localStorage.setItem("profondeur",profondeur)
 
 let E=L*P
 let moises=(L-1)*P
-
 let doubles_colliers=Math.ceil(moises/2)
 
 let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
@@ -265,6 +281,8 @@ Matériel à commander
 <p><b>Cales bois :</b> ${cales}</p>
 <p><b>Doubles colliers :</b> ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
+<button class="export" onclick="exportCommande()">Exporter la commande</button>
+
 </div>
 
 `
@@ -274,7 +292,6 @@ Matériel à commander
 function drawPlan(L,P){
 
 let svg=document.getElementById("plan")
-
 let size=60
 
 let width=L*size
@@ -285,7 +302,6 @@ svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
 let content=""
 
 for(let y=0;y<P;y++){
-
 for(let x=0;x<L;x++){
 
 let cx=x*size+size/2
@@ -296,13 +312,11 @@ content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
 if(x<L-1){
 
 let nx=(x+1)*size+size/2
-
 content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="3"/>`
 
 }
 
 }
-
 }
 
 svg.innerHTML=content
