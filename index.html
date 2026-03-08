@@ -250,35 +250,73 @@ document.getElementById("results").innerHTML=`
 
 }
 
+<script>
+
 function drawPlan(L,P){
 
 let svg=document.getElementById("plan")
-let size=55
+
+let size=70
 
 let width=L*size
 let height=P*size
 
 svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
 
+/* contenu SVG */
+
 let content=""
 
+/* grille des mailles */
+
+for(let x=0;x<=L;x++){
+
+let pos=x*size
+
+content+=`<line x1="${pos}" y1="0" x2="${pos}" y2="${height}" stroke="#cccccc" stroke-width="1"/>`
+
+}
+
+for(let y=0;y<=P;y++){
+
+let pos=y*size
+
+content+=`<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#cccccc" stroke-width="1"/>`
+
+}
+
+/* étais et moises */
+
 for(let y=0;y<P;y++){
+
 for(let x=0;x<L;x++){
 
-let cx=x*size+size/2
-let cy=y*size+size/2
+let cx=(x+0.5)*size
+let cy=(y+0.5)*size
 
-content+=`<circle cx="${cx}" cy="${cy}" r="5" fill="black"/>`
+/* étais */
+
+content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
+
+/* moise vers la droite */
 
 if(x<L-1){
-let nx=(x+1)*size+size/2
-content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="3"/>`
+
+let nx=(x+1.5)*size
+
+content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="4"/>`
+
 }
 
 }
+
 }
 
 svg.innerHTML=content
+
+}
+
+</script>
 
 }
 
