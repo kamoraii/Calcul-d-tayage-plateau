@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+
+<title>Etayage scène</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="apple-touch-icon" href="icone.jpg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Etayage">
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+padding:20px;
+background:#f2f2f2;
+}
+
+h1{
+text-align:center;
+}
+
+.section{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:8px;
+}
+
+input,select,button{
+padding:8px;
+margin:5px;
+font-size:16px;
+}
+
+button{
+cursor:pointer;
+}
+
+#tableau{
+font-size:22px;
+line-height:28px;
+font-family:monospace;
+}
+
+.result{
+font-size:18px;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Étaya­ge scène</h1>
+
+<div class="section">
+
+<h3>Dimensions</h3>
+
+Largeur :
+<input type="number" id="largeur">
+<select id="largeurUnit">
+<option value="m">m</option>
+<option value="maille">mailles</option>
+</select>
+
+<br>
+
+Profondeur :
+<input type="number" id="profondeur">
+<select id="profondeurUnit">
+<option value="m">m</option>
+<option value="maille">mailles</option>
+</select>
+
+<br><br>
+
+<button onclick="calculer()">Calculer</button>
+<button onclick="resetAll()">Reset</button>
+
+</div>
+
+<div class="section">
+
+<h3>Composition d'un étaie</h3>
+
+Poteaux
+<input type="number" id="poteau" value="1">
+
+Vérins
+<input type="number" id="verin" value="2">
+
+Cales bois
+<input type="number" id="cale" value="2">
+
+<br>
+
+<button onclick="resetEtai()">Réinitialiser composition étaie</button>
+
+</div>
+
+<div class="section">
+
+<h3>Tableau</h3>
+
+<div id="tableau"></div>
+
+</div>
+
+<div class="section">
+
+<h3>Résultats</h3>
+
+<div id="resultats" class="result"></div>
+
+<button onclick="exportPNG()">Exporter tableau</button>
+
+</div>
+
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+
+function calculer(){
+
+let largeur=document.getElementById("largeur").value;
+let profondeur=document.getElementById("profondeur").value;
+
+let largeurUnit=document.getElementById("largeurUnit").value;
+let profondeurUnit=document.getElementById("profondeurUnit").value;
+
+if(!profondeur) profondeur=1;
+
+if(largeurUnit==="m") largeur=largeur/2;
+if(profondeurUnit==="m") profondeur=profondeur/2;
+
+largeur=Math.floor(largeur);
+profondeur=Math.floor(profondeur);
+
+let etais=largeur*profondeur;
+let moises=(largeur-1)*profondeur;
+
+let poteau=parseInt(document.getElementById("poteau").value);
+let verin=parseInt(document.getElementById("verin").value);
+let cale=parseInt(document.getElementById("cale").value);
+
+let poteauxTotal=etais*poteau;
+let verinsTotal=etais*verin;
+let calesTotal=etais*cale;
+
+let tableau="";
+
+for(let y=0;y<profondeur;y++){
+
+for(let x=0;x<largeur;x++){
+
+tableau+="●";
+
+if(x<largeur-1) tableau+="—";
+
+}
+
+tableau+="<br>";
+
+}
+
+document.getElementById("tableau").innerHTML=tableau;
+
+document.getElementById("resultats").innerHTML=
+
+"Étais : "+etais+"<br><br>"+
+
+"<b>Matériel à commander</b><br>"+
+
+"Moises : "+moises+"<br>"+
+
+"Poteaux : "+poteauxTotal+"<br>"+
+
+"Vérins : "+verinsTotal+"<br>"+
+
+"Cales bois : "+calesTotal;
+
+localStorage.setItem("largeur",document.getElementById("largeur").value);
+localStorage.setItem("profondeur",document.getElementById("profondeur").value);
+
+}
+
+function resetAll(){
+
+localStorage.clear();
+location.reload();
+
+}
+
+function resetEtai(){
+
+document.getElementById("poteau").value=1;
+document.getElementById("verin").value=2;
+document.getElementById("cale").value=2;
+
+}
+
+function exportPNG(){
+
+html2canvas(document.body).then(function(canvas){
+
+let link=document.createElement("a");
+link.download="etayage.png";
+link.href=canvas.toDataURL();
+link.click();
+
+});
+
+}
+
+window.onload=function(){
+
+if(localStorage.getItem("largeur")){
+
+document.getElementById("largeur").value=localStorage.getItem("largeur");
+
+}
+
+if(localStorage.getItem("profondeur")){
+
+document.getElementById("profondeur").value=localStorage.getItem("profondeur");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
