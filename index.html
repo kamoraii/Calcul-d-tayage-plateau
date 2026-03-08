@@ -46,15 +46,20 @@ margin-top:8px;
 .subtitle{
 font-size:12px;
 color:#666;
+margin-bottom:4px;
 }
+
+/* champs de mesure plus visibles */
 
 input,select{
 width:100%;
-padding:10px;
-font-size:16px;
-margin-bottom:10px;
-border-radius:8px;
-border:1px solid #ddd;
+padding:12px;
+font-size:18px;
+margin-bottom:12px;
+border-radius:10px;
+border:3px solid #2f6df6;
+background:#f0f5ff;
+font-weight:600;
 }
 
 button{
@@ -149,13 +154,11 @@ padding:8px;
 </select>
 
 <button class="calc" onclick="calculer()">Calculer</button>
-<button class="export" onclick="exportImage()">Exporter tableau</button>
+<button class="export" onclick="exportCommande()">Exporter la commande</button>
 <button class="reset" onclick="resetAll()">Reset</button>
 
 </div>
 
-
-<div id="exportZone">
 
 <div class="card">
 
@@ -171,8 +174,6 @@ padding:8px;
 <h3>Résultats</h3>
 
 <div id="results"></div>
-
-</div>
 
 </div>
 
@@ -241,21 +242,13 @@ let poteaux=E*poteaux_par
 let verins=E*verins_par
 let cales=E*cales_par
 
-let now=new Date()
-let date=now.toLocaleDateString("fr-FR")
-let time=now.toLocaleTimeString("fr-FR",{hour:'2-digit',minute:'2-digit'})
-
 drawPlan(L,P)
 
 document.getElementById("results").innerHTML=`
 
-<p style="font-size:12px;color:#666">
-Calcul effectué le ${date} — ${time}
-</p>
-
 <div class="resultBlock">Étais : ${E}</div>
 
-<div class="materialBlock">
+<div class="materialBlock" id="commande">
 
 <div class="materialTitle">
 Matériel à commander
@@ -334,12 +327,12 @@ block.classList.toggle("hidden")
 
 }
 
-function exportImage(){
+function exportCommande(){
 
-html2canvas(document.querySelector("#exportZone")).then(canvas=>{
+html2canvas(document.querySelector("#commande")).then(canvas=>{
 
 let link=document.createElement("a")
-link.download="etayage.png"
+link.download="commande_etayage.png"
 link.href=canvas.toDataURL()
 link.click()
 
