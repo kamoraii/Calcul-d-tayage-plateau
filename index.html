@@ -1,575 +1,271 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Étayage scène · version épurée</title>
-    <!-- META clefs pour mobile et iPhone -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <link rel="apple-touch-icon" href="icone.jpg">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Etayage">
-    <style>
-        /* === RESET & socle iPhone friendly === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            background: #e8f0f8;  /* teinte très douce */
-            font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 12px 10px;    /* aération sans overflow */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<link rel="apple-touch-icon" href="icone.jpg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Etayage">
 
-        .container {
-            max-width: 480px;       /* largeur idéale pour iPhone, pas de débordement */
-            width: 100%;
-            margin: 0 auto;
-        }
+<title>Calcul Étayage</title>
 
-        /* === Titre === */
-        h1 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #1d3f5e;
-            text-align: center;
-            margin: 6px 0 12px 0;
-            padding-bottom: 6px;
-            border-bottom: 3px solid #f1c40f;
-            display: inline-block;
-            width: auto;
-        }
+<style>
 
-        /* === Cartes générales === */
-        .card {
-            background: #ffffffdd;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            border-radius: 32px;
-            padding: 20px 18px;
-            margin-bottom: 18px;
-            box-shadow: 0 10px 24px -8px rgba(0,40,70,0.15), 0 4px 8px rgba(0,0,0,0.02);
-            border: 1px solid rgba(255,255,255,0.6);
-        }
+body{
+font-family:Arial, sans-serif;
+background:#f2f2f2;
+margin:0;
+padding:20px;
+}
 
-        h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1f4e79;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+h2{
+margin-top:0;
+}
 
-        /* === Lignes de saisie : unités bien visibles === */
-        .input-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
-            background: #f2f9ff;
-            padding: 12px 16px;
-            border-radius: 60px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 2px 4px rgba(53, 100, 150, 0.1);
-        }
+.container{
+max-width:600px;
+margin:auto;
+}
 
-        .input-label {
-            font-weight: 600;
-            min-width: 85px;
-            color: #26577c;
-            font-size: 1.05rem;
-        }
+.card{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
 
-        .input-wrapper {
-            display: flex;
-            flex: 2 1 200px;
-            gap: 8px;
-        }
+input,select{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:10px;
+font-size:16px;
+}
 
-        .input-wrapper input {
-            flex: 1 1 100px;
-            padding: 14px 16px;
-            border: none;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 500;
-            background: white;
-            box-shadow: 0 6px 10px rgba(0, 20, 40, 0.04), inset 0 1px 3px #ffffff, inset 0 -2px 3px rgba(0,0,0,0.02);
-            outline: 2px solid transparent;
-            transition: 0.1s;
-        }
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+font-size:16px;
+margin-top:8px;
+color:white;
+}
 
-        .input-wrapper input:focus {
-            outline: 2px solid #ffa726;
-        }
+.calc{background:#1976d2;}
+.reset{background:#d32f2f;}
+.export{background:#388e3c;}
 
-        .unit-badge {
-            background: #1d6f9c;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 5px 0 #0e4a6e;
-            cursor: pointer;
-            transition: 0.1s;
-            border: 1px solid #8dc1e9;
-        }
+.grid{
+font-family:monospace;
+font-size:22px;
+white-space:pre;
+text-align:center;
+}
 
-        .unit-badge select {
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
-            outline: none;
-            margin-left: 4px;
-            direction: rtl;  /* pour que la flèche reste à gauche */
-            appearance: none;
-        }
+.small{
+font-size:14px;
+color:#555;
+}
 
-        .unit-badge select option {
-            background: #1d6f9c;
-            color: white;
-        }
-
-        /* === Boutons (couleurs identiques, plus de relief) === */
-        .button-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 18px 0 6px;
-        }
-
-        .btn {
-            border: none;
-            padding: 16px 20px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            flex: 1 0 auto;
-            min-width: 110px;
-            box-shadow: 0 8px 14px rgba(0, 30, 60, 0.12), 0 3px 0 #a2bbd1, 0 2px 4px rgba(255,255,255,0.3) inset;
-            transition: 0.05s linear;
-            cursor: pointer;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 0 #8ea9c2 inset;
-        }
-
-        .btn-calcul {
-            background: #2e86de;
-        }
-        .btn-reset {
-            background: #e74c3c;
-        }
-        .btn-export {
-            background: #27ae60;
-        }
-
-        /* === Tableau d'étayage === */
-        .tableau-container {
-            background: #162b38;
-            border-radius: 32px;
-            padding: 18px 12px;
-            margin: 10px 0 5px;
-            box-shadow: inset 0 -4px 0 #0f1f29, 0 12px 20px -8px #00000040;
-        }
-
-        #tableau {
-            font-size: 1.8rem;
-            line-height: 2rem;
-            font-family: 'Courier New', Courier, monospace;
-            color: #ffd98c;
-            text-align: center;
-            word-break: keep-all;
-            overflow-x: auto;
-            white-space: pre;
-            background: #10242f;
-            padding: 18px 12px;
-            border-radius: 28px;
-            text-shadow: 0 0 6px #ffb24d;
-            letter-spacing: 6px;
-        }
-
-        /* === Résultats (plus aéré) === */
-        .result-card {
-            background: #d9ebf7;
-            border-radius: 30px;
-            padding: 18px 16px;
-            margin-top: 10px;
-            box-shadow: inset 0 1px 5px #b3cfec, 0 8px 12px rgba(0,30,50,0.1);
-        }
-
-        .resultat-principal {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #15507b;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .resultat-principal span {
-            background: #1f6090;
-            color: white;
-            padding: 8px 22px;
-            border-radius: 40px;
-            font-size: 1.5rem;
-            box-shadow: 0 5px 0 #103b58;
-        }
-
-        .materiel-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 18px 0 6px;
-        }
-
-        .materiel-item {
-            background: white;
-            border-radius: 24px;
-            padding: 12px 6px;
-            text-align: center;
-            font-weight: 600;
-            color: #1c4b72;
-            box-shadow: 0 5px 0 #b0c8dd;
-            border: 1px solid #edf4fd;
-        }
-
-        .materiel-item strong {
-            display: block;
-            font-size: 2rem;
-            font-weight: 800;
-            color: #1d3f5e;
-            line-height: 1.3;
-        }
-
-        /* === Paramètres avancés discrets mais lisibles === */
-        .parametres {
-            background: #ecf3fa;
-            border-radius: 32px;
-            padding: 18px 16px;
-            margin-top: 8px;
-            text-align: left;
-            color: #2b577a;
-            font-size: 0.95rem;
-            box-shadow: 0 8px 12px rgba(0,20,40,0.05);
-        }
-
-        .parametres .compo-line {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 15px;
-            margin: 16px 0;
-        }
-
-        .compo-field {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #deecf9;
-            padding: 8px 8px;
-            border-radius: 24px;
-            min-width: 80px;
-        }
-
-        .compo-field label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #1e5880;
-            text-transform: uppercase;
-        }
-
-        .compo-field input {
-            background: white;
-            border: none;
-            border-radius: 40px;
-            padding: 10px 0;
-            width: 70px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 0 #9db9d2;
-        }
-
-        .small-btn {
-            background: #ccdef2;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 20px;
-            font-weight: 600;
-            color: #1a3f5c;
-            box-shadow: 0 6px 0 #9cb3cc;
-            transition: 0.05s;
-            cursor: pointer;
-            border: 1px solid white;
-            margin-top: 8px;
-        }
-        .small-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 1px 0 #9cb3cc;
-        }
-
-        /* petit pied de page */
-        .footnote {
-            color: #446f99;
-            font-size: 0.7rem;
-            text-align: center;
-            margin: 12px 0 5px;
-            opacity: 0.8;
-        }
-
-        /* Ajustement pour que tout tienne sur iPhone SE (largeur 375) */
-        @media (max-width: 380px) {
-            .input-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .unit-badge {
-                justify-content: center;
-            }
-            .btn {
-                padding: 14px 12px;
-                font-size: 0.95rem;
-            }
-        }
-    </style>
-    <!-- html2canvas (CDN fiable) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</style>
 </head>
+
 <body>
+
 <div class="container">
-    <h1>⚙️ Étayage</h1>
 
-    <!-- Carte dimensions : unités visibles en badge -->
-    <div class="card">
-        <h3>📐 Dimensions scène</h3>
+<div class="card">
+<h2>Dimensions</h2>
 
-        <!-- Largeur -->
-        <div class="input-row">
-            <span class="input-label">Largeur</span>
-            <div class="input-wrapper">
-                <input type="number" id="largeur" step="0.1" min="0.1" value="4">
-                <span class="unit-badge">
-                    📏
-                    <select id="largeurUnit">
-                        <option value="maille" selected>mailles</option>
-                        <option value="m">mètres</option>
-                    </select>
-                </span>
-            </div>
-        </div>
+<label>Largeur</label>
+<input id="largeur" type="number">
+<select id="largeur_unit">
+<option value="maille">mailles</option>
+<option value="metre">mètres</option>
+</select>
 
-        <!-- Profondeur -->
-        <div class="input-row">
-            <span class="input-label">Profondeur</span>
-            <div class="input-wrapper">
-                <input type="number" id="profondeur" step="0.1" min="0.1" placeholder="1 (par défaut)">
-                <span class="unit-badge">
-                    📏
-                    <select id="profondeurUnit">
-                        <option value="maille" selected>mailles</option>
-                        <option value="m">mètres</option>
-                    </select>
-                </span>
-            </div>
-        </div>
+<label>Profondeur</label>
+<input id="profondeur" type="number">
+<select id="profondeur_unit">
+<option value="maille">mailles</option>
+<option value="metre">mètres</option>
+</select>
 
-        <!-- Boutons -->
-        <div class="button-panel">
-            <button class="btn btn-calcul" onclick="calculer()">Calculer</button>
-            <button class="btn btn-reset" onclick="resetAll()">Reset</button>
-            <button class="btn btn-export" onclick="exportPNG()">Exporter</button>
-        </div>
-    </div>
+<button class="calc" onclick="calculer()">Calculer</button>
+<button class="reset" onclick="resetAll()">Reset</button>
+<button class="export" onclick="exportImage()">Exporter tableau</button>
 
-    <!-- Carte tableau visuel -->
-    <div class="card">
-        <h3>📊 Schéma d'étayage</h3>
-        <div class="tableau-container">
-            <div id="tableau">●—●—●<br>●—●—●</div>
-        </div>
-    </div>
-
-    <!-- Carte résultats -->
-    <div class="card">
-        <h3>📦 Matériel</h3>
-        <div class="result-card" id="resultats">
-            <!-- injection JS -->
-            <div class="resultat-principal">
-                🔧 Étais <span id="etaisCount">6</span>
-            </div>
-            <div class="materiel-grid" id="materielGrid">
-                <div class="materiel-item"><span>Moises</span><strong id="moisesCount">4</strong></div>
-                <div class="materiel-item"><span>Poteaux</span><strong id="poteauxCount">6</strong></div>
-                <div class="materiel-item"><span>Vérins</span><strong id="verinsCount">12</strong></div>
-                <div class="materiel-item"><span>Cales bois</span><strong id="calesCount">12</strong></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Paramètres composition étaie (discret mais accessible) -->
-    <div class="parametres">
-        <div style="font-weight:600; margin-bottom:8px;">🛠️ Composition d'un étaie (exceptionnel)</div>
-        <div class="compo-line">
-            <div class="compo-field">
-                <label>Poteaux</label>
-                <input type="number" id="poteau" value="1" min="0" step="1">
-            </div>
-            <div class="compo-field">
-                <label>Vérins</label>
-                <input type="number" id="verin" value="2" min="0" step="1">
-            </div>
-            <div class="compo-field">
-                <label>Cales</label>
-                <input type="number" id="cale" value="2" min="0" step="1">
-            </div>
-        </div>
-        <button class="small-btn" onclick="resetEtai()">↩️ Réinitialiser composition</button>
-    </div>
-    <div class="footnote">ajouter à l’écran d’accueil iPhone</div>
 </div>
 
+
+<div id="exportZone">
+
+<div class="card">
+<h2>Tableau</h2>
+<div id="grid" class="grid"></div>
+</div>
+
+<div class="card">
+<h2>Résultats</h2>
+
+<div id="results"></div>
+
+</div>
+
+</div>
+
+
+<div class="card small">
+
+<h3>Composition d’un étaie</h3>
+
+<label>Poteaux</label>
+<input id="poteaux_par" type="number" value="1">
+
+<label>Vérins</label>
+<input id="verins_par" type="number" value="2">
+
+<label>Cales bois</label>
+<input id="cales_par" type="number" value="2">
+
+<button onclick="resetEtaie()">Réinitialiser composition étaie</button>
+
+</div>
+
+</div>
+
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 <script>
-    // --- récupération DOM ---
-    const largeurInput = document.getElementById('largeur');
-    const profondeurInput = document.getElementById('profondeur');
-    const largeurUnit = document.getElementById('largeurUnit');
-    const profondeurUnit = document.getElementById('profondeurUnit');
 
-    const poteauInput = document.getElementById('poteau');
-    const verinInput = document.getElementById('verin');
-    const caleInput = document.getElementById('cale');
+function toMailles(val,unit){
 
-    const etaisSpan = document.getElementById('etaisCount');
-    const moisesSpan = document.getElementById('moisesCount');
-    const poteauxSpan = document.getElementById('poteauxCount');
-    const verinsSpan = document.getElementById('verinsCount');
-    const calesSpan = document.getElementById('calesCount');
-    const tableauDiv = document.getElementById('tableau');
+if(unit==="maille") return val
 
-    // Fonction centrale (reprise du code original, mais mise à jour des spans)
-    function calculer() {
-        let largeur = parseFloat(largeurInput.value);
-        let profondeur = parseFloat(profondeurInput.value);
+return val/2
 
-        // valeur par défaut profondeur = 1 (si vide ou NaN)
-        if (isNaN(profondeur) || profondeur <= 0) profondeur = 1;
+}
 
-        // conversion en mailles
-        if (largeurUnit.value === "m") largeur = largeur / 2;
-        if (profondeurUnit.value === "m") profondeur = profondeur / 2;
 
-        // on prend la partie entière (nombre de mailles complètes)
-        largeur = Math.floor(largeur);
-        profondeur = Math.floor(profondeur);
-        if (largeur < 1) largeur = 1;
-        if (profondeur < 1) profondeur = 1;
+function calculer(){
 
-        // calculs étai / moises
-        const etais = largeur * profondeur;
-        const moises = (largeur - 1) * profondeur;
+let largeur=parseFloat(document.getElementById("largeur").value)
+let profondeur=parseFloat(document.getElementById("profondeur").value)
 
-        // composition étaie
-        const poteau = parseInt(poteauInput.value, 10) || 1;
-        const verin = parseInt(verinInput.value, 10) || 2;
-        const cale = parseInt(caleInput.value, 10) || 2;
+let unitL=document.getElementById("largeur_unit").value
+let unitP=document.getElementById("profondeur_unit").value
 
-        const poteauxTotal = etais * poteau;
-        const verinsTotal = etais * verin;
-        const calesTotal = etais * cale;
+if(!largeur) return
 
-        // Génération tableau
-        let tableauHtml = "";
-        for (let y = 0; y < profondeur; y++) {
-            for (let x = 0; x < largeur; x++) {
-                tableauHtml += "●";
-                if (x < largeur - 1) tableauHtml += "—";
-            }
-            if (y < profondeur - 1) tableauHtml += "<br>";
-        }
-        tableauDiv.innerHTML = tableauHtml || "●";
+if(!profondeur) profondeur=1
 
-        // Mise à jour des résultats
-        etaisSpan.innerText = etais;
-        moisesSpan.innerText = moises >= 0 ? moises : 0;
-        poteauxSpan.innerText = poteauxTotal;
-        verinsSpan.innerText = verinsTotal;
-        calesSpan.innerText = calesTotal;
+let L=Math.round(toMailles(largeur,unitL))
+let P=Math.round(toMailles(profondeur,unitP))
 
-        // Sauvegarde localStorage
-        localStorage.setItem("largeur", largeurInput.value);
-        localStorage.setItem("profondeur", profondeurInput.value);
-        // (option : sauvegarder aussi les unités si on veut, mais simple)
-        localStorage.setItem("largeurUnit", largeurUnit.value);
-        localStorage.setItem("profondeurUnit", profondeurUnit.value);
-    }
+localStorage.setItem("largeur",largeur)
+localStorage.setItem("profondeur",profondeur)
 
-    // Reset complet
-    function resetAll() {
-        localStorage.clear();
-        location.reload(); // recharge la page avec valeurs par défaut
-    }
+let E=L*P
+let moises=(L-1)*P
 
-    // Reset composition étaie seulement
-    function resetEtai() {
-        poteauInput.value = 1;
-        verinInput.value = 2;
-        caleInput.value = 2;
-        calculer(); // recalcul pour prendre en compte
-    }
+let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
+let verins_par=parseInt(document.getElementById("verins_par").value)
+let cales_par=parseInt(document.getElementById("cales_par").value)
 
-    // Export PNG (sur la zone des résultats + tableau ? mais on suit l'original : corps entier)
-    function exportPNG() {
-        // on utilise le body entier (comportement original), mais on peut restreindre si besoin
-        html2canvas(document.body, {
-            scale: 1.8,
-            backgroundColor: '#e8f0f8',
-            allowTaint: false,
-            logging: false
-        }).then(canvas => {
-            let link = document.createElement('a');
-            link.download = "etayage.png";
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }).catch(() => alert("Export impossible"));
-    }
+let poteaux=E*poteaux_par
+let verins=E*verins_par
+let cales=E*cales_par
 
-    // Restauration localStorage au chargement
-    window.onload = function () {
-        if (localStorage.getItem("largeur")) {
-            largeurInput.value = localStorage.getItem("largeur");
-        }
-        if (localStorage.getItem("profondeur")) {
-            profondeurInput.value = localStorage.getItem("profondeur");
-        }
-        if (localStorage.getItem("largeurUnit")) {
-            largeurUnit.value = localStorage.getItem("largeurUnit");
-        }
-        if (localStorage.getItem("profondeurUnit")) {
-            profondeurUnit.value = localStorage.getItem("profondeurUnit");
-        }
-        // Calcul initial
-        calculer();
-    };
+drawGrid(L,P)
+
+document.getElementById("results").innerHTML=`
+<p><b>Étais : ${E}</b></p>
+
+<p><b>Matériel à commander :</b></p>
+
+<p>Moises : ${moises}</p>
+<p>Poteaux : ${poteaux}</p>
+<p>Vérins : ${verins}</p>
+<p>Cales bois : ${cales}</p>
+`
+
+}
+
+
+function drawGrid(L,P){
+
+let g=""
+
+for(let y=0;y<P;y++){
+
+for(let x=0;x<L;x++){
+
+g+="●"
+
+if(x<L-1) g+="—"
+
+}
+
+g+="\n"
+
+}
+
+document.getElementById("grid").textContent=g
+
+}
+
+
+function resetAll(){
+
+localStorage.clear()
+
+document.getElementById("largeur").value=""
+document.getElementById("profondeur").value=""
+
+document.getElementById("grid").textContent=""
+document.getElementById("results").innerHTML=""
+
+}
+
+
+function resetEtaie(){
+
+document.getElementById("poteaux_par").value=1
+document.getElementById("verins_par").value=2
+document.getElementById("cales_par").value=2
+
+}
+
+
+function exportImage(){
+
+html2canvas(document.querySelector("#exportZone")).then(canvas=>{
+
+let link=document.createElement("a")
+link.download="etayage.png"
+link.href=canvas.toDataURL()
+link.click()
+
+})
+
+}
+
+
+window.onload=function(){
+
+let L=localStorage.getItem("largeur")
+let P=localStorage.getItem("profondeur")
+
+if(L) document.getElementById("largeur").value=L
+if(P) document.getElementById("profondeur").value=P
+
+}
+
 </script>
+
 </body>
 </html>
