@@ -36,14 +36,14 @@ margin-bottom:16px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-h2{
-margin-top:0;
-font-size:20px;
+.title{
+font-size:18px;
+font-weight:600;
 }
 
-label{
-font-size:14px;
-color:#444;
+.subtitle{
+font-size:12px;
+color:#666;
 }
 
 input,select{
@@ -77,19 +77,28 @@ white-space:pre;
 text-align:center;
 }
 
-.small{
-font-size:13px;
-color:#666;
-}
-
 .results p{
 margin:6px 0;
+}
+
+.advanced{
+font-size:13px;
+background:#fafafa;
+}
+
+.advanced input{
+background:#eee;
+}
+
+.smallTitle{
+font-size:14px;
+font-weight:600;
+margin-bottom:6px;
 }
 
 </style>
 
 </head>
-
 
 <body>
 
@@ -97,21 +106,25 @@ margin:6px 0;
 
 <div class="card">
 
-<h2>Dimensions</h2>
+<div class="title">Largeur</div>
+<div class="subtitle">(maille ou mètre)</div>
 
-<label>Largeur</label>
 <input id="largeur" type="number">
 <select id="largeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
 </select>
 
-<label>Profondeur</label>
+
+<div class="title">Profondeur</div>
+<div class="subtitle">(maille ou mètre)</div>
+
 <input id="profondeur" type="number">
 <select id="profondeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
 </select>
+
 
 <button class="calc" onclick="calculer()">Calculer</button>
 <button class="export" onclick="exportImage()">Exporter tableau</button>
@@ -124,7 +137,7 @@ margin:6px 0;
 
 <div class="card">
 
-<h2>Tableau</h2>
+<h3>Tableau</h3>
 
 <div id="grid" class="grid"></div>
 
@@ -133,7 +146,7 @@ margin:6px 0;
 
 <div class="card">
 
-<h2>Résultats</h2>
+<h3>Résultats</h3>
 
 <div id="results" class="results"></div>
 
@@ -142,18 +155,20 @@ margin:6px 0;
 </div>
 
 
-<div class="card small">
+<div class="card advanced">
 
-<h3>Composition d’un étaie</h3>
+<div class="smallTitle">Composition d’un étaie (modification exceptionnelle)</div>
+
+<button onclick="unlockEtaie()">Modifier composition</button>
 
 <label>Poteaux</label>
-<input id="poteaux_par" type="number" value="1">
+<input id="poteaux_par" type="number" value="1" disabled>
 
 <label>Vérins</label>
-<input id="verins_par" type="number" value="2">
+<input id="verins_par" type="number" value="2" disabled>
 
 <label>Cales bois</label>
-<input id="cales_par" type="number" value="2">
+<input id="cales_par" type="number" value="2" disabled>
 
 <button onclick="resetEtaie()">Réinitialiser composition étaie</button>
 
@@ -185,39 +200,30 @@ let profondeur=parseFloat(document.getElementById("profondeur").value)
 
 if(!profondeur) profondeur=1
 
-
 let unitL=document.getElementById("largeur_unit").value
 let unitP=document.getElementById("profondeur_unit").value
-
 
 let L=Math.round(toMailles(largeur,unitL))
 let P=Math.round(toMailles(profondeur,unitP))
 
-
 let largeur_m=L*2
 let profondeur_m=P*2
-
 
 localStorage.setItem("largeur",largeur)
 localStorage.setItem("profondeur",profondeur)
 
-
 let E=L*P
 let moises=(L-1)*P
-
 
 let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
 let verins_par=parseInt(document.getElementById("verins_par").value)
 let cales_par=parseInt(document.getElementById("cales_par").value)
 
-
 let poteaux=E*poteaux_par
 let verins=E*verins_par
 let cales=E*cales_par
 
-
 drawGrid(L,P)
-
 
 document.getElementById("results").innerHTML=`
 
@@ -272,6 +278,19 @@ document.getElementById("profondeur").value=""
 
 document.getElementById("grid").textContent=""
 document.getElementById("results").innerHTML=""
+
+}
+
+
+function unlockEtaie(){
+
+document.getElementById("poteaux_par").disabled=false
+document.getElementById("verins_par").disabled=false
+document.getElementById("cales_par").disabled=false
+
+document.getElementById("poteaux_par").style.background="white"
+document.getElementById("verins_par").style.background="white"
+document.getElementById("cales_par").style.background="white"
 
 }
 
