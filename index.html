@@ -83,21 +83,17 @@ margin-bottom:10px;
 }
 
 .materialBlock{
-
 background:#e8f0ff;
 border-radius:10px;
 padding:14px;
 margin-top:10px;
-
 }
 
 .materialTitle{
-
 font-size:20px;
 font-weight:700;
 color:#1a3fd8;
 margin-bottom:6px;
-
 }
 
 .materialBlock p{
@@ -235,6 +231,8 @@ localStorage.setItem("profondeur",profondeur)
 let E=L*P
 let moises=(L-1)*P
 
+let doubles_colliers = Math.ceil(moises/2)
+
 let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
 let verins_par=parseInt(document.getElementById("verins_par").value)
 let cales_par=parseInt(document.getElementById("cales_par").value)
@@ -255,8 +253,6 @@ document.getElementById("results").innerHTML=`
 Matériel à commander
 </div>
 
-<p>pour une scène de</p>
-
 <p>Largeur : ${largeur_m} m</p>
 <p>Profondeur : ${profondeur_m} m</p>
 
@@ -266,6 +262,7 @@ Matériel à commander
 <p><b>Poteaux :</b> ${poteaux}</p>
 <p><b>Vérins :</b> ${verins}</p>
 <p><b>Cales bois :</b> ${cales}</p>
+<p><b>Doubles colliers :</b> ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
 </div>
 
