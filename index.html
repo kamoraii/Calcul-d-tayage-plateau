@@ -10,55 +10,65 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Étayage scène · web app</title>
     <style>
+        /* RESET & socle */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f1f5f9;
+            background: linear-gradient(145deg, #c6d9eb 0%, #dbeafe 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 16px 10px;
+            padding: 14px 10px;
             margin: 0;
         }
 
         .app {
-            max-width: 600px;
+            max-width: 640px;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
-        /* blocs arrondis */
+        /* Cartes avec relief */
         .card {
-            background: white;
-            border-radius: 24px;
-            padding: 20px 18px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03), 0 2px 6px rgba(0,20,40,0.05);
-            transition: all 0.1s ease;
+            background: #ffffffdd;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 36px;
+            padding: 22px 22px;
+            box-shadow: 
+                0 18px 30px -10px rgba(0, 30, 60, 0.25),
+                inset 0 -3px 0 rgba(0,0,0,0.05),
+                inset 0 2px 4px rgba(255,255,255,0.7);
             border: 1px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(2px);
         }
 
         h2 {
-            font-size: 1.3rem;
+            font-size: 1.45rem;
             font-weight: 600;
-            margin-bottom: 16px;
-            color: #0b2b3c;
-            letter-spacing: -0.2px;
-            border-left: 5px solid #3b7fbd;
-            padding-left: 12px;
+            margin-bottom: 22px;
+            color: #193e60;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+            border-left: 7px solid #ff9f4b;
+            padding-left: 16px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
         }
 
+        /* Dimensions : entrées plus compactes, mieux équilibrées */
         .dimensions-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .dim-row {
@@ -66,189 +76,222 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
+            background: #eef4fc;
+            padding: 12px 16px;
+            border-radius: 100px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 3px 6px rgba(53, 100, 150, 0.08);
         }
 
         .dim-label {
-            font-weight: 500;
-            min-width: 85px;
-            color: #1e4a6d;
+            font-weight: 600;
+            min-width: 80px;
+            color: #26577c;
+            font-size: 1.05rem;
         }
 
         .dim-input-group {
             display: flex;
-            flex: 2 1 200px;
+            flex: 2 1 220px;
             gap: 8px;
         }
 
         .dim-input-group input {
             flex: 1 1 100px;
-            padding: 14px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 40px;
+            padding: 13px 18px;
+            border: none;
+            border-radius: 50px;
             font-size: 1rem;
-            background: #fafdff;
+            font-weight: 500;
+            background: #ffffff;
+            box-shadow: 0 5px 10px rgba(0, 20, 40, 0.08), inset 0 1px 2px #ffffff, inset 0 -2px 3px rgba(0,0,0,0.02);
             transition: 0.15s;
-            outline: none;
+            outline: 2px solid transparent;
         }
 
         .dim-input-group input:focus {
-            border-color: #3b7fbd;
-            box-shadow: 0 0 0 3px rgba(59,127,189,0.15);
+            outline: 2px solid #ff9f4b;
+            box-shadow: 0 8px 15px rgba(255, 140, 0, 0.15);
         }
 
         .dim-unit {
-            padding: 10px 14px;
-            background: #eef2f6;
+            padding: 10px 16px;
+            background: white;
             border-radius: 40px;
-            border: 1px solid #cbd5e1;
-            font-weight: 500;
-            color: #1e3a5f;
+            border: none;
+            font-weight: 600;
+            color: #1f4970;
             cursor: pointer;
-            transition: 0.1s;
             font-size: 0.95rem;
-        }
-
-        select.dim-unit {
-            background: #ffffff;
-            border: 1px solid #b6ccda;
+            box-shadow: 0 5px 8px rgba(0,0,0,0.05), inset 0 -2px 0 #b0c8dd;
             appearance: none;
-            padding-right: 30px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%23336699" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
             background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 14px;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 38px;
         }
 
+        /* Boutons : contrastes et relief */
         .button-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 12px 0 8px 0;
-            justify-content: center;
+            gap: 12px;
+            margin: 18px 0 8px 0;
         }
 
         .btn {
             border: none;
-            padding: 15px 22px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: 0.2px;
-            background: #e2e8f0;
-            color: #1e293b;
+            padding: 16px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+            background: #f2f6fb;
+            color: #162b3c;
             flex: 1 0 auto;
-            min-width: 120px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            min-width: 115px;
+            box-shadow: 0 8px 14px rgba(0, 30, 60, 0.12), 0 3px 0 #b3c9dd, 0 2px 4px rgba(255,255,255,0.5) inset;
             transition: 0.1s ease;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 0 #a0b8cf inset;
         }
 
         .btn.primary {
-            background: #1e6bb8;
+            background: #1d7eb5;
             color: white;
-            box-shadow: 0 8px 16px -6px #1e6bb850;
+            box-shadow: 0 10px 18px -6px #0967a0, 0 3px 0 #0a4b76, 0 2px 4px rgba(255,255,255,0.3) inset;
         }
-        .btn.primary:active { background: #165a9c; }
 
         .btn.reset {
-            background: #dc4c4c;
+            background: #d44e4e;
             color: white;
+            box-shadow: 0 10px 18px -6px #aa3c3c, 0 3px 0 #7f2f2f, 0 2px 4px rgba(255,255,255,0.2) inset;
         }
-        .btn.reset:active { background: #b33f3f; }
 
         .btn.export {
-            background: #2c7a4d;
+            background: #2f8f5f;
             color: white;
-        }
-        .btn.export:active { background: #1f5f39; }
-
-        .btn.secondary {
-            background: #eaeef3;
-            color: #1d3f5e;
+            box-shadow: 0 10px 18px -6px #1f7047, 0 3px 0 #165735, 0 2px 4px rgba(255,255,255,0.2) inset;
         }
 
+        /* Résultats et matériel */
         .resultats {
-            background: #f0f7fe;
-            border-radius: 20px;
-            padding: 18px;
-            margin: 15px 0 8px 0;
+            background: #e3effb;
+            border-radius: 28px;
+            padding: 22px 20px;
+            margin: 18px 0 6px 0;
+            box-shadow: inset 0 2px 5px #b3c9dd, 0 8px 15px rgba(0,40,70,0.1);
         }
 
         .resultats p {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin: 8px 0;
-            color: #0f3348;
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 6px 0;
+            color: #113853;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .resultats span {
-            font-weight: 700;
-            color: #1f5e9e;
+            background: #1f6090;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 0 #0f3550;
         }
 
         .materiel-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 18px;
         }
 
         .materiel-item {
             background: white;
-            padding: 12px;
-            border-radius: 20px;
+            padding: 14px 4px;
+            border-radius: 26px;
             text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-            border: 1px solid #dde7f0;
+            box-shadow: 0 6px 0 #b0c6da, 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #ffffff;
+        }
+
+        .materiel-item span {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2d577c;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .materiel-item strong {
             display: block;
-            font-size: 1.6rem;
-            color: #1d4e7c;
-            line-height: 1.3;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1f4460;
+            line-height: 1.2;
         }
 
+        /* Tableau (schéma) avec style « relief creusé » */
         .tableau-container {
             overflow-x: auto;
             white-space: pre;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.3rem;
-            line-height: 1.5;
-            background: #1b2b36;
-            color: #b3e4f5;
-            padding: 20px 12px;
-            border-radius: 28px;
-            margin: 20px 0 10px 0;
-            text-shadow: 0 0 4px #70c8ff;
-            letter-spacing: 2px;
-            border: 2px solid #304d5e;
-            box-shadow: inset 0 0 0 1px #5d8ca0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1.45rem;
+            font-weight: 500;
+            line-height: 1.6;
+            background: #162b38;
+            color: #ffdea4;
+            padding: 24px 16px;
+            border-radius: 40px;
+            margin: 15px 0 0 0;
+            text-shadow: 0 0 8px #ffb96a;
+            letter-spacing: 4px;
+            box-shadow: 
+                inset 0 -6px 0 #0f1f29,
+                inset 0 6px 10px #2e4b5c,
+                0 15px 20px rgba(0,0,0,0.2);
+            border: 2px solid #497b98;
         }
 
         .tableau-container pre {
             font-family: inherit;
             margin: 0;
             display: inline-block;
+            background: #10242f;
+            padding: 12px 18px;
+            border-radius: 28px;
+            box-shadow: inset 0 0 0 2px #45718a;
         }
 
-        /* section composition discrète */
+        /* section composition : discrète mais lisible */
         .compo-avancee {
-            background: #f3f9ff;
-            border-radius: 28px;
-            padding: 16px;
-            margin-top: 8px;
-            border: 1px solid #c8daea;
+            background: #eef5fd;
+            border-radius: 36px;
+            padding: 18px 22px;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 15px -5px rgba(0,30,60,0.15), inset 0 1px 4px white;
         }
 
         .compo-avancee h3 {
-            font-size: 1rem;
+            font-size: 1.0rem;
             font-weight: 600;
-            color: #346a92;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 15px;
+            color: #28638b;
+            letter-spacing: 0.2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0.8;
         }
 
         .compo-inputs {
@@ -261,72 +304,89 @@
         .compo-field {
             display: flex;
             flex-direction: column;
-            min-width: 70px;
+            min-width: 80px;
         }
 
         .compo-field label {
-            font-size: 0.75rem;
-            color: #4c6c87;
-            margin-bottom: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #3b6082;
+            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
         .compo-field input {
-            padding: 10px 8px;
-            border-radius: 30px;
-            border: 1px solid #b6cfde;
-            width: 85px;
-            font-weight: 600;
-            text-align: center;
+            padding: 12px 10px;
+            border-radius: 40px;
+            border: none;
             background: white;
+            width: 95px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            box-shadow: 0 5px 0 #afc7dc, inset 0 2px 6px white;
+            border: 1px solid #c1d6e9;
         }
 
         .small-btn {
-            background: #d1dfeb;
+            background: #d6e5f5;
             border: none;
-            border-radius: 40px;
-            padding: 10px 18px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #1c3c54;
+            border-radius: 60px;
+            padding: 12px 22px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #11324b;
             cursor: pointer;
-            margin-top: 8px;
-            border: 1px solid #a8bdcf;
+            margin-top: 12px;
+            box-shadow: 0 6px 0 #97b1c9, 0 4px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f0f8ff;
+            transition: 0.05s linear;
         }
 
-        .footer-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: space-between;
-            margin-top: 16px;
+        .small-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #97b1c9;
         }
 
-        /* smartphone optimisations */
-        @media (max-width: 450px) {
+        /* petit footer */
+        .footnote {
+            color: #315d7c;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 6px;
+            font-weight: 500;
+            text-shadow: 0 1px 1px white;
+        }
+
+        /* responsive : ajustements */
+        @media (max-width: 480px) {
             .dim-row {
-                flex-direction: column;
-                align-items: stretch;
+                border-radius: 30px;
+                padding: 12px 12px;
             }
             .dim-label {
-                min-width: auto;
+                min-width: 70px;
+                font-size: 0.95rem;
+            }
+            .materiel-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
             .btn {
                 padding: 14px 12px;
-            }
-            .tableau-container {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
         }
     </style>
-    <!-- html2canvas pour export PNG -->
+    <!-- html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="app" id="app">
 
-    <!-- bloc dimensions -->
+    <!-- Carte dimensions (refonte ergonomique) -->
     <div class="card">
-        <h2>📐 Dimensions</h2>
+        <h2>📐 Dimensions scène</h2>
         <div class="dimensions-grid">
             <div class="dim-row">
                 <span class="dim-label">Largeur</span>
@@ -356,15 +416,15 @@
         </div>
     </div>
 
-    <!-- bloc tableau visuel + résultats -->
+    <!-- Bloc tableau + résultats (exporté) -->
     <div class="card" id="exportBlock">
-        <h2>📊 Échafaudage</h2>
+        <h2>⚙️ Échafaudage & matériel</h2>
         <div id="tableauVisuel" class="tableau-container">
             <pre id="schemaPre">●—●—●<br>●—●—●</pre>
         </div>
 
         <div id="resultatsSection" class="resultats">
-            <p><span>🔧 Étais :</span> <strong id="etaisCount">6</strong></p>
+            <p><span>🔧 Étais</span> <strong id="etaisCount">6</strong></p>
             <div class="materiel-list" id="materielList">
                 <div class="materiel-item"><span>Moises</span><strong id="moisesCount">4</strong></div>
                 <div class="materiel-item"><span>Poteaux</span><strong id="poteauxCount">6</strong></div>
@@ -374,9 +434,9 @@
         </div>
     </div>
 
-    <!-- composition étaie (modifiable) -->
+    <!-- Composition d'un étaie (discrète, en retrait) -->
     <div class="compo-avancee">
-        <h3>⚙️ Composition d’un étaie (exceptionnel)</h3>
+        <h3>🛠️ Composition d’un étaie (modif exceptionnelle)</h3>
         <div class="compo-inputs">
             <div class="compo-field">
                 <label>Poteaux</label>
@@ -394,13 +454,12 @@
         <button class="small-btn" id="btnResetCompo">↩️ Réinitialiser composition étaie</button>
     </div>
 
-    <!-- petit rappel: app iPhone -->
-    <div style="color:#687e94; font-size:0.7rem; text-align:center; padding:8px;">Étayage v1 · ajouter à l’écran d’accueil</div>
+    <div class="footnote">Étayage web-app · ajouter à l’écran d’accueil iPhone</div>
 </div>
 
 <script>
     (function() {
-        // ----- éléments DOM -----
+        // ----- DOM -----
         const largeurInput = document.getElementById('largeurValue');
         const largeurUnit = document.getElementById('largeurUnit');
         const profondeurInput = document.getElementById('profondeurValue');
@@ -421,7 +480,7 @@
         const calesSpan = document.getElementById('calesCount');
         const schemaPre = document.getElementById('schemaPre');
 
-        // ----- état & localStorage -----
+        // ----- localStorage -----
         function saveToStorage() {
             try {
                 localStorage.setItem('etayage_largeur', largeurInput.value);
@@ -437,7 +496,6 @@
                 const lUnit = localStorage.getItem('etayage_largeurUnit');
                 const pVal = localStorage.getItem('etayage_profondeur');
                 const pUnit = localStorage.getItem('etayage_profondeurUnit');
-
                 if (lVal !== null) largeurInput.value = lVal;
                 if (lUnit !== null) largeurUnit.value = lUnit;
                 if (pVal !== null) profondeurInput.value = pVal;
@@ -445,78 +503,52 @@
             } catch (e) {}
         }
 
-        // ----- calculs en mailles -----
-        function getMailleValue(inputEl, unitEl) {
-            let val = parseFloat(inputEl.value);
-            if (isNaN(val) || val <= 0) val = 1; // sécurité
-            const unit = unitEl.value;
-            if (unit === 'metres') {
-                return val / 2; // 1 maille = 2 mètres
-            }
-            return val; // déjà mailles
-        }
-
-        function arrondirMaille(v) {
-            return Math.ceil(v * 1e6) / 1e6; // on garde la précision décimale, mais pour les mailles on veut un nombre potentiellement décimal? l'utilisateur peut mettre 1.5 mètre → 0.75 maille. on autorise les mailles non entières mais le schéma utilisera floor/ceil? selon règle: l'utilisateur entre dimension, on convertit en mailles (float). Pour le calcul étais on prend le nombre de mailles (L, P) en valeur réelle, mais le schéma visuel maille par maille doit être un entier. On arrondit à l'entier supérieur pour le dessin? Il faut préciser : si L=2.3 mailles, on a 3 mailles dans le visuel? La consigne dit "mailles = mètres/2". Une maille = 2m. Donc on peut avoir des demi-mailles. Mais l'étayage est défini par mailles entières. Le plus logique : prendre plancher? Non, une scène de 3m de large = 1.5 maille → on met 2 mailles? Décidons : on prend le nombre entier de mailles nécessaire (arrondi supérieur) car on ne peut pas avoir de demi-maille. L'énoncé dit "mailles = mètres ÷ 2" sans préciser l'arrondi. Mais le tableau doit afficher des mailles entières. On choisit : nombre de mailles = ceil(mètres/2) pour la largeur et profondeur. Pour un résultat sécuritaire.
-            // De plus, la règle : si profondeur non renseignée = 1 maille.
-        }
-
+        // ----- conversion en mailles entières -----
         function getMailleInt(inputEl, unitEl) {
             let raw = parseFloat(inputEl.value);
-            if (isNaN(raw) || raw <= 0) raw = 1; 
+            if (isNaN(raw) || raw <= 0) raw = 1;
             if (unitEl.value === 'metres') {
-                return Math.ceil(raw / 2); // nombre entier de mailles supérieur
+                return Math.ceil(raw / 2);
             } else {
-                // déjà mailles, on veut un entier : on prend le ceil également (ex: 2.3 mailles → 3 mailles)
                 return Math.ceil(raw);
             }
         }
 
-        // fonction principale de mise à jour
-        function mettreAJour(resultats = true) {
-            // récup composition
+        // ----- mise à jour complète (identique fonctionnement, seulement le style change) -----
+        function mettreAJour() {
             const poteauxParEtaie = parseInt(compoPoteaux.value, 10) || 1;
             const verinsParEtaie = parseInt(compoVerins.value, 10) || 2;
             const calesParEtaie = parseInt(compoCales.value, 10) || 2;
 
-            // profondeur par défaut si vide ou null
-            let profondeurRaw = profondeurInput.value.trim() === '' ? null : parseFloat(profondeurInput.value);
-            let profondeurVal = profondeurRaw;
-            if (profondeurRaw === null || isNaN(profondeurRaw)) {
-                // valeur par défaut = 1 maille. On adapte selon l'unité
+            // valeur par défaut profondeur
+            if (profondeurInput.value.trim() === '' || isNaN(parseFloat(profondeurInput.value))) {
                 if (profondeurUnit.value === 'metres') {
-                    profondeurInput.value = 2;   // 1 maille = 2m
+                    profondeurInput.value = '2';
                 } else {
-                    profondeurInput.value = 1;
+                    profondeurInput.value = '1';
                 }
-                profondeurVal = parseFloat(profondeurInput.value);
             }
-
-            // largeur toujours obligatoire (valeur par défaut 4)
             if (largeurInput.value.trim() === '' || isNaN(parseFloat(largeurInput.value))) {
-                largeurInput.value = 4;
+                largeurInput.value = '4';
                 largeurUnit.value = 'mailles';
             }
 
-            // conversion en mailles entières
             const L = getMailleInt(largeurInput, largeurUnit);
             const P = getMailleInt(profondeurInput, profondeurUnit);
 
-            // calculs de base
             const etais = L * P;
-            const moises = (L - 1) * P;   // L-1 fois P, peut devenir négatif si L=0? L>=1
+            const moises = (L - 1) * P;
             const poteaux = etais * poteauxParEtaie;
             const verins = etais * verinsParEtaie;
             const cales = etais * calesParEtaie;
 
-            // affichage
             etaisSpan.textContent = etais;
-            moisesSpan.textContent = moises >= 0 ? moises : 0; // pas de moises négatives
+            moisesSpan.textContent = moises >= 0 ? moises : 0;
             poteauxSpan.textContent = poteaux;
             verinsSpan.textContent = verins;
             calesSpan.textContent = cales;
 
-            // génération du schéma
+            // schéma
             let schema = '';
             for (let p = 0; p < P; p++) {
                 for (let l = 0; l < L; l++) {
@@ -525,9 +557,8 @@
                 }
                 if (p < P - 1) schema += '\n';
             }
-            schemaPre.textContent = schema || '●'; // au moins un point
+            schemaPre.textContent = schema || '●';
 
-            // sauvegarde localStorage
             saveToStorage();
         }
 
@@ -543,7 +574,6 @@
             profondeurInput.value = '';
             profondeurUnit.value = 'mailles';
 
-            // composition par défaut
             compoPoteaux.value = 1;
             compoVerins.value = 2;
             compoCales.value = 2;
@@ -551,7 +581,6 @@
             mettreAJour();
         }
 
-        // réinitialiser composition uniquement
         function resetCompoSeule() {
             compoPoteaux.value = 1;
             compoVerins.value = 2;
@@ -559,7 +588,6 @@
             mettreAJour();
         }
 
-        // export image via html2canvas
         function exporterImage() {
             const element = document.getElementById('exportBlock');
             if (!element) return;
@@ -574,58 +602,31 @@
                 link.download = 'etayage-schema.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            }).catch(err => {
-                alert("Erreur export : " + err);
-            });
+            }).catch(() => alert("Export échoué"));
         }
 
-        // ----- event listeners -----
-        btnCalculer.addEventListener('click', (e) => {
-            e.preventDefault();
-            mettreAJour();
-        });
+        // ----- events -----
+        btnCalculer.addEventListener('click', (e) => { e.preventDefault(); mettreAJour(); });
+        btnReset.addEventListener('click', (e) => { e.preventDefault(); resetComplet(); });
+        btnResetCompo.addEventListener('click', (e) => { e.preventDefault(); resetCompoSeule(); });
+        btnExporter.addEventListener('click', (e) => { e.preventDefault(); exporterImage(); });
 
-        btnReset.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetComplet();
-        });
-
-        btnResetCompo.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetCompoSeule();
-        });
-
-        btnExporter.addEventListener('click', (e) => {
-            e.preventDefault();
-            exporterImage();
-        });
-
-        // restauration depuis localStorage au chargement
+        // restauration
         loadFromStorage();
-
-        // s'assurer que la profondeur par défaut soit appliquée après chargement si vide
         window.addEventListener('load', function() {
-            // si profondeur input est vide, mettreAJour va appliquer la valeur par défaut (1 maille ou 2m) selon l'unité
-            // mais on veut que le champ affiche la valeur par défaut si absent
             if (!profondeurInput.value || profondeurInput.value.trim() === '') {
-                if (profondeurUnit.value === 'metres') {
-                    profondeurInput.value = '2';
-                } else {
-                    profondeurInput.value = '1';
-                }
+                profondeurInput.value = profondeurUnit.value === 'metres' ? '2' : '1';
             }
             mettreAJour();
         });
 
-        // initial call
         mettreAJour();
 
-        // sauvegarde à chaque changement de champs (optionnel)
+        // sauvegarde silencieuse
         largeurInput.addEventListener('change', saveToStorage);
         largeurUnit.addEventListener('change', saveToStorage);
         profondeurInput.addEventListener('change', saveToStorage);
         profondeurUnit.addEventListener('change', saveToStorage);
-        // pour les composition on ne sauvegarde pas en localStorage
     })();
 </script>
 </body>
