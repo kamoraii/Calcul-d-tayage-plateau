@@ -37,16 +37,24 @@ margin-bottom:14px;
 box-shadow:0 6px 14px rgba(0,0,0,0.15);
 }
 
-.title{
-font-size:17px;
-font-weight:600;
+.headerRow{
+display:flex;
+justify-content:space-between;
+align-items:center;
 margin-top:6px;
 }
 
-.subtitle{
-font-size:12px;
-color:#666;
-margin-bottom:6px;
+.headerRow h3{
+margin:0;
+font-size:16px;
+}
+
+.headerRow select{
+width:110px;
+height:36px;
+border-radius:8px;
+border:2px solid #2f6df6;
+background:#f0f5ff;
 }
 
 /* zone mesure */
@@ -54,11 +62,9 @@ margin-bottom:6px;
 .measureRow{
 display:flex;
 align-items:center;
-gap:8px;
-margin-bottom:12px;
+gap:10px;
+margin-top:8px;
 }
-
-/* boutons + - */
 
 .measureRow button{
 width:38px;
@@ -69,8 +75,6 @@ border:none;
 border-radius:8px;
 color:white;
 }
-
-/* champ mesure */
 
 .measureRow input{
 width:80px;
@@ -83,43 +87,19 @@ background:#f0f5ff;
 font-weight:600;
 }
 
-/* unité */
-
-.measureRow select{
-width:55px;
-height:38px;
-font-size:14px;
-border-radius:8px;
-border:2px solid #2f6df6;
-background:#f0f5ff;
-}
-
-/* boutons principaux */
-
-.mainButton{
+button.main{
 width:100%;
 padding:11px;
 border:none;
 border-radius:10px;
 font-size:16px;
-margin-top:6px;
+margin-top:8px;
 color:white;
 }
 
 .calc{background:#2f6df6;}
 .reset{background:#d84343;}
 .export{background:#2e9e53;}
-
-#plan{
-width:100%;
-height:auto;
-}
-
-.resultBlock{
-font-size:18px;
-font-weight:600;
-margin-bottom:10px;
-}
 
 .materialBlock{
 background:#e8f0ff;
@@ -132,32 +112,10 @@ margin-top:10px;
 font-size:20px;
 font-weight:700;
 color:#1a3fd8;
-margin-bottom:6px;
-}
-
-.materialBlock p{
-margin:4px 0;
-font-size:16px;
-}
-
-.advanced{
-background:rgba(255,255,255,0.6);
-padding:10px;
-border-radius:10px;
-font-size:13px;
 }
 
 .hidden{
 display:none;
-}
-
-.smallButton{
-background:#666;
-font-size:13px;
-padding:7px;
-border-radius:8px;
-color:white;
-border:none;
 }
 
 </style>
@@ -170,78 +128,50 @@ border:none;
 
 <div class="card">
 
-<div class="title">Largeur</div>
-<div class="subtitle">(maille ou mètre)</div>
-
-<div class="measureRow">
-
-<button onclick="changeValue('largeur','largeur_unit',-1)">−</button>
-
-<input id="largeur" type="number">
-
-<button onclick="changeValue('largeur','largeur_unit',1)">+</button>
+<div class="headerRow">
+<h3>LARGEUR (mailles ou mètres)</h3>
 
 <select id="largeur_unit">
-<option value="maille">M</option>
-<option value="metre">m</option>
+<option value="maille">mailles</option>
+<option value="metre">mètres</option>
 </select>
-
 </div>
-
-<div class="title">Profondeur</div>
-<div class="subtitle">(maille ou mètre)</div>
 
 <div class="measureRow">
+<button onclick="changeValue('largeur','largeur_unit',-1)">−</button>
+<input id="largeur" type="number">
+<button onclick="changeValue('largeur','largeur_unit',1)">+</button>
+</div>
 
-<button onclick="changeValue('profondeur','profondeur_unit',-1)">−</button>
 
-<input id="profondeur" type="number">
-
-<button onclick="changeValue('profondeur','profondeur_unit',1)">+</button>
+<div class="headerRow">
+<h3>PROFONDEUR (mailles ou mètres)</h3>
 
 <select id="profondeur_unit">
-<option value="maille">M</option>
-<option value="metre">m</option>
+<option value="maille">mailles</option>
+<option value="metre">mètres</option>
 </select>
-
 </div>
 
-<button class="mainButton calc" onclick="calculer()">Calculer</button>
-<button class="mainButton reset" onclick="resetAll()">Reset</button>
+<div class="measureRow">
+<button onclick="changeValue('profondeur','profondeur_unit',-1)">−</button>
+<input id="profondeur" type="number">
+<button onclick="changeValue('profondeur','profondeur_unit',1)">+</button>
+</div>
+
+<button class="main calc" onclick="calculer()">Calculer</button>
+<button class="main reset" onclick="resetAll()">Reset</button>
 
 </div>
 
 <div class="card">
-
 <h3>Plan d’étayage</h3>
 <svg id="plan"></svg>
-
 </div>
 
 <div class="card">
-
 <h3>Résultats</h3>
 <div id="results"></div>
-
-</div>
-
-<div class="advanced">
-
-<button class="smallButton" onclick="toggleEtaie()">Modifier composition étaie</button>
-
-<div id="etaieBlock" class="hidden">
-
-<label>Poteaux</label>
-<input id="poteaux_par" type="number" value="1">
-
-<label>Vérins</label>
-<input id="verins_par" type="number" value="2">
-
-<label>Cales bois</label>
-<input id="cales_par" type="number" value="2">
-
-</div>
-
 </div>
 
 </div>
@@ -291,47 +221,30 @@ let P=Math.round(toMailles(profondeur,unitP))
 let largeur_m=L*2
 let profondeur_m=P*2
 
-localStorage.setItem("largeur",largeur)
-localStorage.setItem("profondeur",profondeur)
-
 let E=L*P
 let moises=(L-1)*P
 let doubles_colliers=Math.ceil(moises/2)
-
-let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
-let verins_par=parseInt(document.getElementById("verins_par").value)
-let cales_par=parseInt(document.getElementById("cales_par").value)
-
-let poteaux=E*poteaux_par
-let verins=E*verins_par
-let cales=E*cales_par
 
 drawPlan(L,P)
 
 document.getElementById("results").innerHTML=`
 
-<div class="resultBlock">Étais : ${E}</div>
-
 <div class="materialBlock" id="commande">
 
-<div class="materialTitle">
-Matériel à commander
-</div>
+<div class="materialTitle">Matériel à commander</div>
 
 <p>Largeur : ${largeur_m} m</p>
 <p>Profondeur : ${profondeur_m} m</p>
 
-<br>
-
-<p><b>Moises :</b> ${moises}</p>
-<p><b>Poteaux :</b> ${poteaux}</p>
-<p><b>Vérins :</b> ${verins}</p>
-<p><b>Cales bois :</b> ${cales}</p>
-<p><b>Doubles colliers :</b> ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
-
-<button class="mainButton export" onclick="exportCommande()">Exporter la commande</button>
+<p>Moises : ${moises}</p>
+<p>Poteaux : ${E}</p>
+<p>Vérins : ${E*2}</p>
+<p>Cales bois : ${E*2}</p>
+<p>Doubles colliers : ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
 </div>
+
+<button class="main export" onclick="exportCommande()">Exporter la commande</button>
 
 `
 
@@ -371,17 +284,11 @@ svg.innerHTML=content
 
 function resetAll(){
 
-localStorage.clear()
-
 document.getElementById("largeur").value=""
 document.getElementById("profondeur").value=""
 document.getElementById("plan").innerHTML=""
 document.getElementById("results").innerHTML=""
 
-}
-
-function toggleEtaie(){
-document.getElementById("etaieBlock").classList.toggle("hidden")
 }
 
 function exportCommande(){
@@ -395,20 +302,6 @@ link.click()
 
 })
 
-}
-
-window.onload=function(){
-
-let L=localStorage.getItem("largeur")
-let P=localStorage.getItem("profondeur")
-
-if(L) document.getElementById("largeur").value=L
-if(P) document.getElementById("profondeur").value=P
-
-}
-
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('service-worker.js')
 }
 
 </script>
