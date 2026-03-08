@@ -12,15 +12,16 @@
 <meta name="apple-mobile-web-app-title" content="Etayage">
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1976d2">
+<meta name="theme-color" content="#2f6df6">
 
 <style>
 
 body{
 font-family:-apple-system,BlinkMacSystemFont,Arial;
-background:#f2f2f2;
 margin:0;
 padding:16px;
+background:linear-gradient(180deg,#2f6df6,#4f8cff);
+min-height:100vh;
 }
 
 .container{
@@ -33,24 +34,25 @@ background:white;
 padding:18px;
 border-radius:14px;
 margin-bottom:16px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+box-shadow:0 6px 14px rgba(0,0,0,0.15);
 }
 
 .title{
 font-size:18px;
 font-weight:600;
+margin-top:8px;
 }
 
 .subtitle{
 font-size:12px;
 color:#666;
+margin-bottom:4px;
 }
 
 input,select{
 width:100%;
 padding:10px;
 font-size:16px;
-margin-top:4px;
 margin-bottom:10px;
 border-radius:8px;
 border:1px solid #ddd;
@@ -66,9 +68,9 @@ margin-top:8px;
 color:white;
 }
 
-.calc{background:#1976d2;}
-.reset{background:#d32f2f;}
-.export{background:#2e7d32;}
+.calc{background:#2f6df6;}
+.reset{background:#d84343;}
+.export{background:#2e9e53;}
 
 .grid{
 font-family:monospace;
@@ -82,23 +84,34 @@ margin:6px 0;
 }
 
 .advanced{
+
+background:rgba(255,255,255,0.6);
+padding:10px;
+border-radius:10px;
 font-size:13px;
-background:#fafafa;
+
 }
 
 .advanced input{
 background:#eee;
 }
 
-.smallTitle{
-font-size:14px;
-font-weight:600;
-margin-bottom:6px;
+.smallButton{
+
+background:#666;
+font-size:13px;
+padding:8px;
+
+}
+
+.hidden{
+display:none;
 }
 
 </style>
 
 </head>
+
 
 <body>
 
@@ -110,6 +123,7 @@ margin-bottom:6px;
 <div class="subtitle">(maille ou mètre)</div>
 
 <input id="largeur" type="number">
+
 <select id="largeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
@@ -120,6 +134,7 @@ margin-bottom:6px;
 <div class="subtitle">(maille ou mètre)</div>
 
 <input id="profondeur" type="number">
+
 <select id="profondeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
@@ -155,24 +170,25 @@ margin-bottom:6px;
 </div>
 
 
-<div class="card advanced">
+<div class="advanced">
 
-<div class="smallTitle">Composition d’un étaie (modification exceptionnelle)</div>
+<button class="smallButton" onclick="toggleEtaie()">Modifier composition étaie</button>
 
-<button onclick="unlockEtaie()">Modifier composition</button>
+<div id="etaieBlock" class="hidden">
 
 <label>Poteaux</label>
-<input id="poteaux_par" type="number" value="1" disabled>
+<input id="poteaux_par" type="number" value="1">
 
 <label>Vérins</label>
-<input id="verins_par" type="number" value="2" disabled>
+<input id="verins_par" type="number" value="2">
 
 <label>Cales bois</label>
-<input id="cales_par" type="number" value="2" disabled>
-
-<button onclick="resetEtaie()">Réinitialiser composition étaie</button>
+<input id="cales_par" type="number" value="2">
 
 </div>
+
+</div>
+
 
 </div>
 
@@ -282,24 +298,19 @@ document.getElementById("results").innerHTML=""
 }
 
 
-function unlockEtaie(){
+function toggleEtaie(){
 
-document.getElementById("poteaux_par").disabled=false
-document.getElementById("verins_par").disabled=false
-document.getElementById("cales_par").disabled=false
+let block=document.getElementById("etaieBlock")
 
-document.getElementById("poteaux_par").style.background="white"
-document.getElementById("verins_par").style.background="white"
-document.getElementById("cales_par").style.background="white"
+if(block.classList.contains("hidden")){
+
+block.classList.remove("hidden")
+
+}else{
+
+block.classList.add("hidden")
 
 }
-
-
-function resetEtaie(){
-
-document.getElementById("poteaux_par").value=1
-document.getElementById("verins_par").value=2
-document.getElementById("cales_par").value=2
 
 }
 
