@@ -231,7 +231,7 @@ localStorage.setItem("profondeur",profondeur)
 let E=L*P
 let moises=(L-1)*P
 
-let doubles_colliers = Math.ceil(moises/2)
+let doubles_colliers=Math.ceil(moises/2)
 
 let poteaux_par=parseInt(document.getElementById("poteaux_par").value)
 let verins_par=parseInt(document.getElementById("verins_par").value)
@@ -241,9 +241,17 @@ let poteaux=E*poteaux_par
 let verins=E*verins_par
 let cales=E*cales_par
 
+let now=new Date()
+let date=now.toLocaleDateString("fr-FR")
+let time=now.toLocaleTimeString("fr-FR",{hour:'2-digit',minute:'2-digit'})
+
 drawPlan(L,P)
 
 document.getElementById("results").innerHTML=`
+
+<p style="font-size:12px;color:#666">
+Calcul effectué le ${date} — ${time}
+</p>
 
 <div class="resultBlock">Étais : ${E}</div>
 
