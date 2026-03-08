@@ -49,19 +49,30 @@ color:#666;
 margin-bottom:6px;
 }
 
-/* zone largeur / profondeur */
+/* zone mesure */
 
 .measureRow{
 display:flex;
-gap:10px;
 align-items:center;
-margin-bottom:12px;
+gap:8px;
+margin-bottom:14px;
+}
+
+.measureRow button{
+width:40px;
+height:40px;
+font-size:20px;
+background:#2f6df6;
+border:none;
+border-radius:8px;
+color:white;
 }
 
 .measureRow input{
-flex:1;
-padding:12px;
+width:90px;
+padding:10px;
 font-size:18px;
+text-align:center;
 border-radius:10px;
 border:3px solid #2f6df6;
 background:#f0f5ff;
@@ -69,10 +80,10 @@ font-weight:600;
 }
 
 .measureRow select{
-width:110px;
-padding:10px;
-font-size:16px;
-border-radius:10px;
+width:60px;
+height:40px;
+font-size:14px;
+border-radius:8px;
 border:2px solid #2f6df6;
 background:#f0f5ff;
 }
@@ -154,11 +165,18 @@ padding:8px;
 <div class="subtitle">(maille ou mètre)</div>
 
 <div class="measureRow">
+
+<button onclick="changeValue('largeur','largeur_unit',-1)">−</button>
+
 <input id="largeur" type="number">
+
+<button onclick="changeValue('largeur','largeur_unit',1)">+</button>
+
 <select id="largeur_unit">
-<option value="maille">mailles</option>
-<option value="metre">mètres</option>
+<option value="maille">M</option>
+<option value="metre">m</option>
 </select>
+
 </div>
 
 
@@ -166,11 +184,18 @@ padding:8px;
 <div class="subtitle">(maille ou mètre)</div>
 
 <div class="measureRow">
+
+<button onclick="changeValue('profondeur','profondeur_unit',-1)">−</button>
+
 <input id="profondeur" type="number">
+
+<button onclick="changeValue('profondeur','profondeur_unit',1)">+</button>
+
 <select id="profondeur_unit">
-<option value="maille">mailles</option>
-<option value="metre">mètres</option>
+<option value="maille">M</option>
+<option value="metre">m</option>
 </select>
+
 </div>
 
 <button class="calc" onclick="calculer()">Calculer</button>
@@ -220,6 +245,29 @@ padding:8px;
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+
+function changeValue(id,unitId,delta){
+
+let input=document.getElementById(id)
+let unit=document.getElementById(unitId).value
+
+let value=parseFloat(input.value)||0
+
+if(unit==="metre"){
+
+value+=delta*2
+
+}else{
+
+value+=delta
+
+}
+
+if(value<0) value=0
+
+input.value=value
+
+}
 
 function toMailles(val,unit){
 if(unit==="maille") return val
