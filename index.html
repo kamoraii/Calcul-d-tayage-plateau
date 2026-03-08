@@ -46,7 +46,6 @@ margin-top:8px;
 .subtitle{
 font-size:12px;
 color:#666;
-margin-bottom:4px;
 }
 
 input,select{
@@ -72,46 +71,60 @@ color:white;
 .reset{background:#d84343;}
 .export{background:#2e9e53;}
 
-.grid{
-font-family:monospace;
-font-size:22px;
-white-space:pre;
-text-align:center;
+#plan{
+width:100%;
+height:auto;
 }
 
-.results p{
-margin:6px 0;
+.resultBlock{
+font-size:18px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.materialBlock{
+
+background:#e8f0ff;
+border-radius:10px;
+padding:14px;
+margin-top:10px;
+
+}
+
+.materialTitle{
+
+font-size:20px;
+font-weight:700;
+color:#1a3fd8;
+margin-bottom:6px;
+
+}
+
+.materialBlock p{
+margin:5px 0;
+font-size:17px;
 }
 
 .advanced{
-
 background:rgba(255,255,255,0.6);
 padding:10px;
 border-radius:10px;
 font-size:13px;
-
-}
-
-.advanced input{
-background:#eee;
-}
-
-.smallButton{
-
-background:#666;
-font-size:13px;
-padding:8px;
-
 }
 
 .hidden{
 display:none;
 }
 
+.smallButton{
+background:#666;
+font-size:13px;
+padding:8px;
+}
+
 </style>
 
 </head>
-
 
 <body>
 
@@ -129,7 +142,6 @@ display:none;
 <option value="metre">mètres</option>
 </select>
 
-
 <div class="title">Profondeur</div>
 <div class="subtitle">(maille ou mètre)</div>
 
@@ -139,7 +151,6 @@ display:none;
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
 </select>
-
 
 <button class="calc" onclick="calculer()">Calculer</button>
 <button class="export" onclick="exportImage()">Exporter tableau</button>
@@ -152,9 +163,9 @@ display:none;
 
 <div class="card">
 
-<h3>Tableau</h3>
+<h3>Plan d’étayage</h3>
 
-<div id="grid" class="grid"></div>
+<svg id="plan"></svg>
 
 </div>
 
@@ -163,7 +174,7 @@ display:none;
 
 <h3>Résultats</h3>
 
-<div id="results" class="results"></div>
+<div id="results"></div>
 
 </div>
 
@@ -189,7 +200,6 @@ display:none;
 
 </div>
 
-
 </div>
 
 
@@ -198,22 +208,16 @@ display:none;
 <script>
 
 function toMailles(val,unit){
-
 if(unit==="maille") return val
-
 return val/2
-
 }
-
 
 function calculer(){
 
 let largeur=parseFloat(document.getElementById("largeur").value)
-
 if(!largeur) return
 
 let profondeur=parseFloat(document.getElementById("profondeur").value)
-
 if(!profondeur) profondeur=1
 
 let unitL=document.getElementById("largeur_unit").value
@@ -239,51 +243,73 @@ let poteaux=E*poteaux_par
 let verins=E*verins_par
 let cales=E*cales_par
 
-drawGrid(L,P)
+drawPlan(L,P)
 
 document.getElementById("results").innerHTML=`
 
-<p><b>Étais : ${E}</b></p>
+<div class="resultBlock">Étais : ${E}</div>
 
-<p><b>Matériel à commander pour une scène de :</b></p>
+<div class="materialBlock">
+
+<div class="materialTitle">
+Matériel à commander
+</div>
+
+<p>pour une scène de</p>
 
 <p>Largeur : ${largeur_m} m</p>
 <p>Profondeur : ${profondeur_m} m</p>
 
 <br>
 
-<p>Moises : ${moises}</p>
-<p>Poteaux : ${poteaux}</p>
-<p>Vérins : ${verins}</p>
-<p>Cales bois : ${cales}</p>
+<p><b>Moises :</b> ${moises}</p>
+<p><b>Poteaux :</b> ${poteaux}</p>
+<p><b>Vérins :</b> ${verins}</p>
+<p><b>Cales bois :</b> ${cales}</p>
+
+</div>
 
 `
 
 }
 
+function drawPlan(L,P){
 
-function drawGrid(L,P){
+let svg=document.getElementById("plan")
 
-let g=""
+let size=60
+
+let width=L*size
+let height=P*size
+
+svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
+
+let content=""
 
 for(let y=0;y<P;y++){
 
 for(let x=0;x<L;x++){
 
-g+="●"
+let cx=x*size+size/2
+let cy=y*size+size/2
 
-if(x<L-1) g+="—"
+content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
+
+if(x<L-1){
+
+let nx=(x+1)*size+size/2
+
+content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="3"/>`
 
 }
 
-g+="\n"
+}
 
 }
 
-document.getElementById("grid").textContent=g
+svg.innerHTML=content
 
 }
-
 
 function resetAll(){
 
@@ -291,46 +317,30 @@ localStorage.clear()
 
 document.getElementById("largeur").value=""
 document.getElementById("profondeur").value=""
-
-document.getElementById("grid").textContent=""
+document.getElementById("plan").innerHTML=""
 document.getElementById("results").innerHTML=""
 
 }
 
-
 function toggleEtaie(){
 
 let block=document.getElementById("etaieBlock")
-
-if(block.classList.contains("hidden")){
-
-block.classList.remove("hidden")
-
-}else{
-
-block.classList.add("hidden")
+block.classList.toggle("hidden")
 
 }
-
-}
-
 
 function exportImage(){
 
 html2canvas(document.querySelector("#exportZone")).then(canvas=>{
 
 let link=document.createElement("a")
-
 link.download="etayage.png"
-
 link.href=canvas.toDataURL()
-
 link.click()
 
 })
 
 }
-
 
 window.onload=function(){
 
@@ -341,7 +351,6 @@ if(L) document.getElementById("largeur").value=L
 if(P) document.getElementById("profondeur").value=P
 
 }
-
 
 if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('service-worker.js')
