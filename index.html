@@ -50,7 +50,7 @@ font-size:16px;
 }
 
 .headerRow select{
-width:110px;
+width:120px;
 height:36px;
 border-radius:8px;
 border:2px solid #2f6df6;
@@ -114,8 +114,9 @@ font-weight:700;
 color:#1a3fd8;
 }
 
-.hidden{
-display:none;
+#plan{
+width:100%;
+margin-top:10px;
 }
 
 </style>
@@ -164,17 +165,26 @@ display:none;
 
 </div>
 
+
 <div class="card">
+
 <h3>Plan d’étayage</h3>
+
 <svg id="plan"></svg>
+
 </div>
+
 
 <div class="card">
+
 <h3>Résultats</h3>
+
 <div id="results"></div>
+
 </div>
 
 </div>
+
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
@@ -193,23 +203,28 @@ value+=delta*2
 value+=delta
 }
 
-if(value<0) value=0
+if(value<0)value=0
 
 input.value=value
 
 }
 
 function toMailles(val,unit){
+
 if(unit==="maille") return val
+
 return val/2
+
 }
 
 function calculer(){
 
 let largeur=parseFloat(document.getElementById("largeur").value)
+
 if(!largeur) return
 
 let profondeur=parseFloat(document.getElementById("profondeur").value)
+
 if(!profondeur) profondeur=1
 
 let unitL=document.getElementById("largeur_unit").value
@@ -222,7 +237,9 @@ let largeur_m=L*2
 let profondeur_m=P*2
 
 let E=L*P
+
 let moises=(L-1)*P
+
 let doubles_colliers=Math.ceil(moises/2)
 
 drawPlan(L,P)
@@ -250,8 +267,6 @@ document.getElementById("results").innerHTML=`
 
 }
 
-<script>
-
 function drawPlan(L,P){
 
 let svg=document.getElementById("plan")
@@ -262,8 +277,6 @@ let width=L*size
 let height=P*size
 
 svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
-
-/* contenu SVG */
 
 let content=""
 
@@ -294,11 +307,7 @@ for(let x=0;x<L;x++){
 let cx=(x+0.5)*size
 let cy=(y+0.5)*size
 
-/* étais */
-
 content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
-
-/* moise vers la droite */
 
 if(x<L-1){
 
@@ -316,16 +325,12 @@ svg.innerHTML=content
 
 }
 
-</script>
-
-}
-
 function resetAll(){
 
 document.getElementById("largeur").value=""
 document.getElementById("profondeur").value=""
-document.getElementById("plan").innerHTML=""
 document.getElementById("results").innerHTML=""
+document.getElementById("plan").innerHTML=""
 
 }
 
@@ -334,8 +339,11 @@ function exportCommande(){
 html2canvas(document.querySelector("#commande")).then(canvas=>{
 
 let link=document.createElement("a")
+
 link.download="commande_etayage.png"
+
 link.href=canvas.toDataURL()
+
 link.click()
 
 })
