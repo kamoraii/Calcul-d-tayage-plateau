@@ -11,9 +11,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Etayage">
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f6df6">
-
 <style>
 
 body{
@@ -22,6 +19,12 @@ margin:0;
 padding:16px;
 background:linear-gradient(180deg,#2f6df6,#4f8cff);
 min-height:100vh;
+transition:0.3s;
+}
+
+.dark{
+background:#121212;
+color:#eee;
 }
 
 .container{
@@ -37,6 +40,10 @@ margin-bottom:14px;
 box-shadow:0 6px 14px rgba(0,0,0,0.15);
 }
 
+.dark .card{
+background:#1e1e1e;
+}
+
 .headerRow{
 display:flex;
 justify-content:space-between;
@@ -50,7 +57,7 @@ font-size:16px;
 }
 
 .headerRow select{
-width:120px;
+width:110px;
 height:36px;
 border-radius:8px;
 border:2px solid #2f6df6;
@@ -106,10 +113,25 @@ padding:12px;
 margin-top:10px;
 }
 
+.dark .materialBlock{
+background:#2b2b2b;
+}
+
 .materialTitle{
-font-size:20px;
+font-size:22px;
 font-weight:700;
 color:#1a3fd8;
+margin-bottom:6px;
+}
+
+.sceneInfo{
+font-size:14px;
+color:#555;
+margin-bottom:10px;
+}
+
+.dark .sceneInfo{
+color:#aaa;
 }
 
 #plan{
@@ -131,6 +153,27 @@ margin-top:0;
 margin-bottom:18px;
 }
 
+.dark .titleMain,
+.dark .subtitle{
+color:#ddd;
+}
+
+.modeToggle{
+display:block;
+margin:auto;
+margin-bottom:14px;
+padding:8px 14px;
+border-radius:20px;
+border:none;
+background:white;
+cursor:pointer;
+}
+
+.dark .modeToggle{
+background:#333;
+color:white;
+}
+
 </style>
 
 </head>
@@ -139,19 +182,20 @@ margin-bottom:18px;
 
 <div class="container">
 
+<button class="modeToggle" onclick="toggleMode()">🌙 Mode sombre</button>
+
 <h1 class="titleMain">Calculateur d’étayage de scène</h1>
 
 <p class="subtitle">
 Entrez les dimensions de la scène.<br>
 Les valeurs peuvent être saisies en <b>mailles</b> ou en <b>mètres</b>.<br>
-<b>1 maille = 2 m</b>
+<b>1 maille = 2 m × 2 m</b>
 </p>
 
 <div class="card">
 
 <div class="headerRow">
 <h3>LARGEUR (mailles ou mètres)</h3>
-
 <select id="largeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
@@ -164,10 +208,8 @@ Les valeurs peuvent être saisies en <b>mailles</b> ou en <b>mètres</b>.<br>
 <button onclick="changeValue('largeur','largeur_unit',1)">+</button>
 </div>
 
-
 <div class="headerRow">
 <h3>PROFONDEUR (mailles ou mètres)</h3>
-
 <select id="profondeur_unit">
 <option value="maille">mailles</option>
 <option value="metre">mètres</option>
@@ -185,30 +227,25 @@ Les valeurs peuvent être saisies en <b>mailles</b> ou en <b>mètres</b>.<br>
 
 </div>
 
-
 <div class="card">
-
 <h3>Plan d’étayage</h3>
-
 <svg id="plan"></svg>
-
 </div>
-
 
 <div class="card">
-
 <h3>Résultats</h3>
-
 <div id="results"></div>
-
 </div>
 
 </div>
-
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+
+function toggleMode(){
+document.body.classList.toggle("dark")
+}
 
 function changeValue(id,unitId,delta){
 
@@ -217,34 +254,25 @@ let unit=document.getElementById(unitId).value
 
 let value=parseFloat(input.value)||0
 
-if(unit==="metre"){
-value+=delta*2
-}else{
-value+=delta
-}
+if(unit==="metre"){value+=delta*2}
+else{value+=delta}
 
 if(value<0)value=0
 
 input.value=value
-
 }
 
 function toMailles(val,unit){
-
 if(unit==="maille") return val
-
 return val/2
-
 }
 
 function calculer(){
 
 let largeur=parseFloat(document.getElementById("largeur").value)
-
 if(!largeur) return
 
 let profondeur=parseFloat(document.getElementById("profondeur").value)
-
 if(!profondeur) profondeur=1
 
 let unitL=document.getElementById("largeur_unit").value
@@ -260,8 +288,6 @@ let E=L*P
 let moises=(L-1)*P
 let doubles_colliers=Math.ceil(moises/2)
 
-/* calcul poids estimé */
-
 let poids_total=Math.round((E*13.5)+(moises*7))
 
 drawPlan(L,P)
@@ -272,8 +298,7 @@ document.getElementById("results").innerHTML=`
 
 <div class="materialTitle">Matériel à commander</div>
 
-<p>Largeur : ${largeur_m} m</p>
-<p>Profondeur : ${profondeur_m} m</p>
+<div class="sceneInfo">Pour une scène de ${largeur_m} m × ${profondeur_m} m</div>
 
 <p>Moises : ${moises}</p>
 <p>Poteaux : ${E}</p>
@@ -281,7 +306,7 @@ document.getElementById("results").innerHTML=`
 <p>Cales bois : ${E*2}</p>
 <p>Doubles colliers : ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
-<p style="font-size:13px;color:#555;">
+<p style="font-size:13px;color:#666">
 (poids estimé : ${poids_total} kg)
 </p>
 
@@ -290,13 +315,11 @@ document.getElementById("results").innerHTML=`
 <button class="main export" onclick="exportCommande()">Exporter la commande</button>
 
 `
-
 }
 
 function drawPlan(L,P){
 
 let svg=document.getElementById("plan")
-
 let size=70
 
 let width=L*size
@@ -307,23 +330,16 @@ svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
 let content=""
 
 for(let x=0;x<=L;x++){
-
 let pos=x*size
-
 content+=`<line x1="${pos}" y1="0" x2="${pos}" y2="${height}" stroke="#cccccc" stroke-width="1"/>`
-
 }
 
 for(let y=0;y<=P;y++){
-
 let pos=y*size
-
 content+=`<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#cccccc" stroke-width="1"/>`
-
 }
 
 for(let y=0;y<P;y++){
-
 for(let x=0;x<L;x++){
 
 let cx=(x+0.5)*size
@@ -332,28 +348,21 @@ let cy=(y+0.5)*size
 content+=`<circle cx="${cx}" cy="${cy}" r="6" fill="black"/>`
 
 if(x<L-1){
-
 let nx=(x+1.5)*size
-
 content+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="black" stroke-width="4"/>`
-
 }
 
 }
-
 }
 
 svg.innerHTML=content
-
 }
 
 function resetAll(){
-
 document.getElementById("largeur").value=""
 document.getElementById("profondeur").value=""
 document.getElementById("results").innerHTML=""
 document.getElementById("plan").innerHTML=""
-
 }
 
 function exportCommande(){
@@ -375,4 +384,4 @@ link.click()
 </script>
 
 </body>
-</html> 
+</html>
