@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Etayage</title>
+<title>Calculateur d’étayage de scène</title>
 
 <link rel="apple-touch-icon" href="icone.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -119,6 +119,20 @@ width:100%;
 margin-top:10px;
 }
 
+.titleMain{
+color:white;
+text-align:center;
+margin-bottom:4px;
+}
+
+.subtitle{
+color:white;
+text-align:center;
+font-size:14px;
+margin-top:0;
+margin-bottom:18px;
+}
+
 </style>
 
 </head>
@@ -126,6 +140,14 @@ margin-top:10px;
 <body>
 
 <div class="container">
+
+<h1 class="titleMain">Calculateur d’étayage de scène</h1>
+
+<p class="subtitle">
+Entrez les dimensions de la scène.<br>
+Les valeurs peuvent être saisies en <b>mailles</b> ou en <b>mètres</b>.<br>
+<b>1 maille = 2 m</b>
+</p>
 
 <div class="card">
 
@@ -280,8 +302,6 @@ svg.setAttribute("viewBox",`0 0 ${width} ${height}`)
 
 let content=""
 
-/* grille des mailles */
-
 for(let x=0;x<=L;x++){
 
 let pos=x*size
@@ -297,8 +317,6 @@ let pos=y*size
 content+=`<line x1="0" y1="${pos}" x2="${width}" y2="${pos}" stroke="#cccccc" stroke-width="1"/>`
 
 }
-
-/* étais et moises */
 
 for(let y=0;y<P;y++){
 
