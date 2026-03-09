@@ -17,7 +17,7 @@ body{
 font-family:-apple-system,BlinkMacSystemFont,Arial;
 margin:0;
 padding:16px;
-background:linear-gradient(180deg,#2f6df6,#4f8cff);
+background:linear-gradient(180deg,#6a5acd,#c056d5);
 min-height:100vh;
 transition:0.3s;
 }
@@ -60,8 +60,8 @@ font-size:16px;
 width:110px;
 height:36px;
 border-radius:8px;
-border:2px solid #2f6df6;
-background:#f0f5ff;
+border:2px solid #7b5cff;
+background:#f5f3ff;
 }
 
 .measureRow{
@@ -75,7 +75,7 @@ margin-top:8px;
 width:38px;
 height:38px;
 font-size:20px;
-background:#2f6df6;
+background:#7b5cff;
 border:none;
 border-radius:8px;
 color:white;
@@ -87,8 +87,8 @@ padding:8px;
 font-size:18px;
 text-align:center;
 border-radius:10px;
-border:3px solid #2f6df6;
-background:#f0f5ff;
+border:3px solid #7b5cff;
+background:#f5f3ff;
 font-weight:600;
 }
 
@@ -102,14 +102,14 @@ margin-top:8px;
 color:white;
 }
 
-.calc{background:#2f6df6;}
+.calc{background:#7b5cff;}
 .reset{background:#d84343;}
 .export{background:#2e9e53;}
-.copy{background:#6c63ff;}
+.copy{background:#5b57ff;}
 .share{background:#ff9800;}
 
 .materialBlock{
-background:#e8f0ff;
+background:#f1edff;
 border-radius:10px;
 padding:12px;
 margin-top:10px;
@@ -122,7 +122,7 @@ background:#2b2b2b;
 .materialTitle{
 font-size:22px;
 font-weight:700;
-color:#1a3fd8;
+color:#7b5cff;
 margin-bottom:6px;
 }
 
@@ -340,16 +340,14 @@ alert("Commande copiée")
 }
 
 function partagerCommande(){
-
 if(navigator.share){
 navigator.share({
 title:"Commande étayage",
 text:commandeTexte
 })
 }else{
-alert("Partage non disponible sur ce navigateur")
+alert("Partage non disponible")
 }
-
 }
 
 function drawPlan(L,P){
@@ -401,19 +399,12 @@ document.getElementById("plan").innerHTML=""
 }
 
 function exportCommande(){
-
 html2canvas(document.querySelector("#commande")).then(canvas=>{
-
 let link=document.createElement("a")
-
 link.download="commande_etayage.png"
-
 link.href=canvas.toDataURL()
-
 link.click()
-
 })
-
 }
 
 </script>
