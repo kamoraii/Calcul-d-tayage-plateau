@@ -57,8 +57,6 @@ border:2px solid #2f6df6;
 background:#f0f5ff;
 }
 
-/* zone mesure */
-
 .measureRow{
 display:flex;
 align-items:center;
@@ -259,10 +257,12 @@ let largeur_m=L*2
 let profondeur_m=P*2
 
 let E=L*P
-
 let moises=(L-1)*P
-
 let doubles_colliers=Math.ceil(moises/2)
+
+/* calcul poids estimé */
+
+let poids_total=Math.round((E*13.5)+(moises*7))
 
 drawPlan(L,P)
 
@@ -280,6 +280,10 @@ document.getElementById("results").innerHTML=`
 <p>Vérins : ${E*2}</p>
 <p>Cales bois : ${E*2}</p>
 <p>Doubles colliers : ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
+
+<p style="font-size:13px;color:#555;">
+(poids estimé : ${poids_total} kg)
+</p>
 
 </div>
 
