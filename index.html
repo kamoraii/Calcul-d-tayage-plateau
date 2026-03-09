@@ -105,6 +105,8 @@ color:white;
 .calc{background:#2f6df6;}
 .reset{background:#d84343;}
 .export{background:#2e9e53;}
+.copy{background:#6c63ff;}
+.share{background:#ff9800;}
 
 .materialBlock{
 background:#e8f0ff;
@@ -243,6 +245,8 @@ Les valeurs peuvent être saisies en <b>mailles</b> ou en <b>mètres</b>.<br>
 
 <script>
 
+let commandeTexte=""
+
 function toggleMode(){
 document.body.classList.toggle("dark")
 }
@@ -292,6 +296,19 @@ let poids_total=Math.round((E*13.5)+(moises*7))
 
 drawPlan(L,P)
 
+commandeTexte=
+`Commande étayage
+
+Scène : ${largeur_m} m × ${profondeur_m} m
+
+Moises : ${moises}
+Poteaux : ${E}
+Vérins : ${E*2}
+Cales bois : ${E*2}
+Doubles colliers : ${doubles_colliers}
+
+Poids estimé : ${poids_total} kg`
+
 document.getElementById("results").innerHTML=`
 
 <div class="materialBlock" id="commande">
@@ -306,15 +323,33 @@ document.getElementById("results").innerHTML=`
 <p>Cales bois : ${E*2}</p>
 <p>Doubles colliers : ${doubles_colliers} (${doubles_colliers} doubles colliers)</p>
 
-<p style="font-size:13px;color:#666">
-(poids estimé : ${poids_total} kg)
-</p>
+<p style="font-size:13px;color:#666">(poids estimé : ${poids_total} kg)</p>
 
 </div>
 
 <button class="main export" onclick="exportCommande()">Exporter la commande</button>
+<button class="main copy" onclick="copierCommande()">Copier la commande</button>
+<button class="main share" onclick="partagerCommande()">Envoyer la commande</button>
 
 `
+}
+
+function copierCommande(){
+navigator.clipboard.writeText(commandeTexte)
+alert("Commande copiée")
+}
+
+function partagerCommande(){
+
+if(navigator.share){
+navigator.share({
+title:"Commande étayage",
+text:commandeTexte
+})
+}else{
+alert("Partage non disponible sur ce navigateur")
+}
+
 }
 
 function drawPlan(L,P){
